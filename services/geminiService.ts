@@ -109,7 +109,7 @@ const extractJson = (text: string) => {
       try {
         return JSON.parse(match[0]);
       } catch (innerE) {
-        throw new Error("AI가 생성한 데이터 형식이 올바르지 않습니다.");
+        throw new Error("AI data parsing error");
       }
     }
     throw e;
@@ -117,29 +117,22 @@ const extractJson = (text: string) => {
 };
 
 export const analyzeInfluencer = async (url: string, lang: Language = 'ko'): Promise<AnalysisReport> => {
-  // Ensure we use the latest environment variable
-  const apiKey = process.env.API_KEY || '';
-  
-  if (!apiKey) {
-    throw new Error("API 키가 설정되지 않았습니다. 관리자 설정에서 API_KEY 환경 변수를 확인해주세요.");
-  }
-
-  const ai = new GoogleGenAI({ apiKey });
+  // Initialize AI instance with the key provided by the environment
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
   const targetLanguage = getLanguageName(lang);
   
-  const prompt = `Perform a deep performance analysis of the following influencer profile: ${url}. 
-  Find live data about their posts count, followers, engagement, and audience sentiment. 
-  The analysis must be in ${targetLanguage}. 
-  Ensure all numbers are accurately fetched using search.`;
+  const prompt = `Conduct a comprehensive influencer audit for: ${url}. 
+  Use Google Search to verify current follower counts, post metrics, and audience engagement trends. 
+  Language: ${targetLanguage}.`;
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview', 
+      model: 'gemini-3-pro-preview', // Upgraded for complex reasoning & search
       contents: prompt,
       config: {
-        systemInstruction: `You are a world-class social media auditor. 
-        Fetch real-time metrics using Google Search Grounding. 
-        Return a strict JSON response following the provided schema.`,
+        systemInstruction: `You are an expert social media analyst. 
+        Perform deep-dive research using real-time web search. 
+        Always return results in the specified JSON format.`,
         tools: [{ googleSearch: {} }],
         responseMimeType: "application/json",
         responseSchema: reportSchema,
@@ -148,46 +141,39 @@ export const analyzeInfluencer = async (url: string, lang: Language = 'ko'): Pro
 
     const result = extractJson(response.text.trim()) as AnalysisReport;
     
-    // Extract search references
+    // Add citation sources
     const groundingSources: GroundingSource[] = [];
     const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
     if (chunks) {
       chunks.forEach((chunk: any) => {
         if (chunk.web) {
           groundingSources.push({
-            title: chunk.web.title || "Reference",
+            title: chunk.web.title || "Reference Source",
             uri: chunk.web.uri
           });
         }
       });
     }
     
-    const uniqueSources = Array.from(new Set(groundingSources.map(s => s.uri)))
+    result.sources = Array.from(new Set(groundingSources.map(s => s.uri)))
       .map(uri => groundingSources.find(s => s.uri === uri)!);
 
-    result.sources = uniqueSources;
     return result;
   } catch (error: any) {
-    console.error("Gemini SDK Error:", error);
-    if (error.message?.includes("API Key") || error.message?.includes("browser")) {
-      throw new Error("브라우저 환경에서 API 키가 올바르게 주입되지 않았습니다. 환경 설정을 점검해 주세요.");
-    }
-    throw new Error(error.message || "분석 서버와의 연결이 원활하지 않습니다. 잠시 후 다시 시도해 주세요.");
+    console.error("Analysis Failure:", error);
+    throw new Error(error.message || "분석을 진행할 수 없습니다. 잠시 후 다시 시도해 주세요.");
   }
 };
 
 export const translateReport = async (sourceReport: AnalysisReport, targetLang: Language): Promise<AnalysisReport> => {
-  const apiKey = process.env.API_KEY || '';
-  if (!apiKey) return sourceReport;
-
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
   const targetLanguageName = getLanguageName(targetLang);
 
-  const prompt = `Translate this influencer report to ${targetLanguageName}. Keep all metrics and specific values as they are: ${JSON.stringify(sourceReport)}`;
+  const prompt = `Translate this influencer report to ${targetLanguageName}, preserving all numeric data: ${JSON.stringify(sourceReport)}`;
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-3-pro-preview',
       contents: prompt,
       config: {
         responseMimeType: "application/json",
