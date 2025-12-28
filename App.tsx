@@ -4,7 +4,7 @@ import { AnalysisReport, Language } from './types';
 import { analyzeInfluencer, translateReport } from './services/geminiService';
 import ReportView from './components/ReportView';
 
-const translations = {
+const translations: Record<Language, any> = {
   ko: {
     logo: { first: '인플루언서', second: '인사이트', third: 'PRO' },
     nav: { usage: '이용 안내', enterprise: '엔터프라이즈', login: '로그인' },
@@ -49,43 +49,43 @@ const translations = {
   },
   ja: {
     logo: { first: 'Influencer', second: 'Insight', third: 'PRO' },
-    nav: { usage: 'ご利用ガイド', enterprise: 'エンタープライズ', login: 'ログイン' },
+    nav: { usage: 'ご利用ガイド', enterprise: 'エン터프라이즈', login: 'ログイン' },
     hero: {
-      title1: 'インフルエンサーの価値을',
-      title2: 'データで証明しましょう',
-      sub: '単なる分析を超えて、成長のためのロードマップを提示します。AIが自動的にレポートを生成します。'
+      title1: '인플루언서의 가치를',
+      title2: '데이터로 증명하세요',
+      sub: '단순 분석을 넘어, 성장을 위한 로드맵을 제시합니다. AI가 자동으로 플랫폼을 식별하고 딥다이브 리포트를 생성합니다.'
     },
     input: { placeholder: 'URLを入力してください', button: 'レポート作成' },
-    loading: { title: 'データを精密分析中です...', sub: 'トレンドの関連性を抽出しています。' },
-    translating: { title: '言語の最適化中...', sub: 'AIが内容をローカライズしています。' },
+    loading: { title: 'データを精密分析中です...', sub: 'トレンドの関連성을 추출하고 있습니다. ' },
+    translating: { title: '言語の最適化中...', sub: 'AI가 내용를 로컬라이즈하고 있습니다.' },
     features: [
-      { title: '自動プラットフォーム識別', desc: 'URLだけでチャンネルを識別します.' },
-      { title: '精密感情分析', desc: 'コメントの反応をリアルタイム指数で分類します.' },
-      { title: 'ブランドコラボガイド', desc: '最適なブランド適合性を提案します' },
-      { title: 'チャンネル成長ロードマップ', desc: '飛躍のための具体的な戦略を提供します.' },
-      { title: 'トレンド拡張性分析', desc: '他プラットフォームへの拡張可能性を診断します.' },
-      { title: 'コンテンツDNA抽出', desc: '核心テーマとスタイルを定義します.' }
+      { title: '自動プラットフォーム識別', desc: 'URLだけでチャンネルを識別합니다.' },
+      { title: '精密感情分析', desc: 'コメントの反応をリアルタイム指数で 분류합니다.' },
+      { title: 'ブランドコラボガイド', desc: '最適なブランド適合性を提案합니다' },
+      { title: 'チャンネル成長ロードマップ', desc: '飛躍のための具体的な戦略を提供합니다.' },
+      { title: 'トレンド拡張性分析', desc: '他プラットフォームへの拡張可能性を診断합니다.' },
+      { title: 'コンテンツDNA抽出', desc: '核心テーマとスタイルを定義합니다.' }
     ],
     footer: '© 2024 Influencer Insight Pro.'
   },
   zh: {
     logo: { first: 'Influencer', second: 'Insight', third: 'PRO' },
-    nav: { usage: '指南', enterprise: '企业版', login: '登录' },
+    nav: { usage: '使用指南', enterprise: '企业版', login: '登录' },
     hero: {
       title1: '用数据证明',
-      title2: '网红의 가치',
+      title2: '网红의 价值',
       sub: '超越简单的分析，提供成长路线图。AI 自动生成深度分析报告。'
     },
-    input: { placeholder: '请输入 URL', button: '生成报告' },
-    loading: { title: '正在进行精确分析...', sub: '正在提取成长指南和趋势关联。' },
-    translating: { title: '正在优化语言...', sub: 'AI 正在对内容进行本地化。' },
+    input: { placeholder: '输入 URL', button: '生成报告' },
+    loading: { title: '正在分析数据...', sub: '正在提取增长指南和趋势相关性。' },
+    translating: { title: '正在优化语言...', sub: 'AI 正在本地化内容。' },
     features: [
-      { title: '自动平台识别', desc: '仅凭 URL 即可识别平台.' },
-      { title: '情感分析', desc: '将受众反应分类为情感指数.' },
-      { title: '品牌合作指南', desc: '建议最佳合作匹配度.' },
-      { title: '成长路线图', desc: '助您的频道更上一层楼.' },
-      { title: '扩展性分析', desc: '诊断跨平台扩展的潜力.' },
-      { title: '内容 DNA 提取', desc: '定义频道核心主题.' }
+      { title: '自动平台识别', desc: '从 URL 自动识别平台。' },
+      { title: '精准情感分析', desc: '实时分析粉丝评论情感。' },
+      { title: '品牌合作指南', desc: '建议最匹配的品牌。' },
+      { title: '增长路线图', desc: '提供具体的成长策略。' },
+      { title: '趋势扩展分析', desc: '分析多平台扩展潜力。' },
+      { title: '内容 DNA 提取', desc: '定义核心主题和风格。' }
     ],
     footer: '© 2024 Influencer Insight Pro.'
   },
@@ -114,7 +114,7 @@ const translations = {
     logo: { first: 'Influencer', second: 'Insight', third: 'PRO' },
     nav: { usage: 'คู่มือ', enterprise: 'องค์กร', login: 'เข้าสู่ระบบ' },
     hero: {
-      title1: 'พิสูจน์คุณค่าอิน플ลูเอนเซอร์',
+      title1: 'พิสูจน์คุณค่าอินฟลูเอนเซอร์',
       title2: 'ด้วยข้อมูลเชิงลึก',
       sub: 'นำเสนอแผนงานเพื่อการเติบโต AI ระบุแพลตฟอร์มและสร้างรายงานเชิงลึกโดยอัตโนมัติ'
     },
@@ -154,16 +154,38 @@ const translations = {
   }
 };
 
+const languages: { code: Language; label: string }[] = [
+  { code: 'ko', label: '한국어(KR)' },
+  { code: 'en', label: 'English(EN)' },
+  { code: 'ja', label: '日本語(JP)' },
+  { code: 'zh', label: '简体中文(CN)' },
+  { code: 'vi', label: 'Tiếng Việt(VI)' },
+  { code: 'th', label: 'ไทย(TH)' },
+  { code: 'id', label: 'Bahasa Indonesia(ID)' },
+];
+
 const App: React.FC = () => {
   const [lang, setLang] = useState<Language>('ko');
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [url, setUrl] = useState('');
-  const [currentAnalyzedUrl, setCurrentAnalyzedUrl] = useState(''); // 분석에 사용된 원본 URL 저장
+  const [currentAnalyzedUrl, setCurrentAnalyzedUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
   const [report, setReport] = useState<AnalysisReport | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const langMenuRef = useRef<HTMLDivElement>(null);
   const t = translations[lang] || translations.ko;
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (langMenuRef.current && !langMenuRef.current.contains(event.target as Node)) {
+        setIsLangMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,7 +194,7 @@ const App: React.FC = () => {
     setIsLoading(true);
     setError(null);
     setReport(null);
-    setCurrentAnalyzedUrl(url); // 분석 시작 시점의 URL 저장
+    setCurrentAnalyzedUrl(url);
 
     try {
       const data = await analyzeInfluencer(url, lang);
@@ -185,10 +207,9 @@ const App: React.FC = () => {
   };
 
   const handleLanguageChange = async (newLang: Language) => {
+    setIsLangMenuOpen(false);
     if (newLang === lang) return;
-    
     setLang(newLang);
-    
     if (report) {
       setIsTranslating(true);
       try {
@@ -209,47 +230,60 @@ const App: React.FC = () => {
     setError(null);
   };
 
+  const currentLangLabel = languages.find(l => l.code === lang)?.label || '한국어(KR)';
+
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 overflow-x-hidden">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={reset}>
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-indigo-200">
-              <i className="fa-solid fa-bolt-lightning text-sm"></i>
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-2 sm:gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-2 cursor-pointer shrink-0" onClick={reset}>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-indigo-100">
+              <i className="fa-solid fa-bolt-lightning text-xs sm:text-sm"></i>
             </div>
-            <div className="flex font-black text-lg tracking-tighter">
+            <div className="flex items-baseline font-black text-sm sm:text-lg tracking-tighter">
               <span className="text-slate-900">{t.logo.first}</span>
-              <span className="text-indigo-600">{t.logo.second}</span>
-              <span className="text-slate-300 ml-1">{t.logo.third}</span>
+              <span className="text-indigo-600 ml-0.5">{t.logo.second}</span>
+              <span className="ml-1.5 animate-blink-gold font-black text-[10px] sm:text-[13px] tracking-widest">{t.logo.third}</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-6">
-            <div className="hidden md:flex items-center gap-6 text-sm font-bold text-slate-400">
-              <a href="#" className="hover:text-indigo-600 transition-colors">{t.nav.usage}</a>
-              <a href="#" className="hover:text-indigo-600 transition-colors">{t.nav.enterprise}</a>
-            </div>
-            
-            <div className="relative flex items-center bg-white border border-slate-200 rounded-full px-3 py-1.5 shadow-sm hover:border-indigo-200 transition-all group">
-              <i className="fa-solid fa-earth-americas text-amber-500 text-xs mr-2"></i>
-              <select 
-                value={lang} 
-                onChange={(e) => handleLanguageChange(e.target.value as Language)}
-                className="bg-transparent border-none p-0 text-[11px] font-bold text-slate-700 cursor-pointer focus:ring-0 outline-none appearance-none pr-4"
+          <div className="flex items-center gap-2 sm:gap-4 ml-auto" ref={langMenuRef}>
+            {/* Custom Language Selector */}
+            <div className="relative">
+              <button 
+                onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+                className="flex items-center gap-2 bg-white border border-slate-200 rounded-full px-3 py-2 sm:px-4 sm:py-2.5 shadow-sm hover:border-slate-300 transition-all active:scale-95 shrink-0"
               >
-                <option value="ko">한국어(KR)</option>
-                <option value="en">영어(EN)</option>
-                <option value="ja">일본어(JP)</option>
-                <option value="zh">중국어(CN)</option>
-                <option value="vi">베트남어(VN)</option>
-                <option value="th">태국어(TH)</option>
-                <option value="id">인도네시아어(ID)</option>
-              </select>
-              <i className="fa-solid fa-chevron-down text-[8px] text-slate-400 absolute right-3 pointer-events-none transition-transform group-hover:translate-y-0.5"></i>
+                <i className="fa-solid fa-earth-americas text-[#D4AF37] text-sm sm:text-base"></i>
+                <span className="text-[10px] sm:text-[13px] font-black text-[#1e293b] leading-none">
+                  {currentLangLabel}
+                </span>
+                <i className={`fa-solid fa-chevron-${isLangMenuOpen ? 'up' : 'down'} text-[8px] sm:text-[10px] text-slate-400 transition-transform duration-300`}></i>
+              </button>
+
+              {/* Dropdown Menu */}
+              {isLangMenuOpen && (
+                <div className="absolute top-full mt-2 right-0 w-[180px] sm:w-[220px] bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden py-2 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+                  {languages.map((l) => (
+                    <button
+                      key={l.code}
+                      onClick={() => handleLanguageChange(l.code)}
+                      className="w-full flex items-center justify-between px-5 py-3 hover:bg-slate-50 transition-colors group"
+                    >
+                      <span className={`text-[12px] sm:text-[14px] font-black tracking-tight ${l.code === lang ? 'text-[#D4AF37]' : 'text-[#1e293b]'}`}>
+                        {l.label}
+                      </span>
+                      {l.code === lang && (
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] shadow-[0_0_8px_rgba(212,175,55,0.6)]"></div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <button className="px-4 py-2 bg-slate-900 text-white rounded-full text-xs font-bold hover:bg-slate-800 transition-all shadow-md">
+            <button className="px-3.5 py-1.5 sm:px-6 sm:py-2.5 bg-slate-900 text-white rounded-full text-[10px] sm:text-xs font-black hover:bg-slate-800 transition-all shadow-md shrink-0">
               {t.nav.login}
             </button>
           </div>
@@ -260,55 +294,57 @@ const App: React.FC = () => {
         {!report && !isLoading && (
           <div className="space-y-16 sm:space-y-24">
             {/* Hero Section */}
-            <div className="text-center space-y-6 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-1000">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-full text-xs font-bold border border-indigo-100 mb-2">
-                <span className="relative flex h-2 w-2">
+            <div className="text-center space-y-8 sm:space-y-12 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-6 duration-1000">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[10px] sm:text-xs font-black border border-indigo-100 mb-2">
+                <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-600"></span>
+                  <span className="relative inline-flex rounded-full h-full w-full bg-indigo-600"></span>
                 </span>
-                Powered by Gemini 3.0 Pro (Data Grounding)
+                AI Content Auditor v2.0
               </div>
-              <h1 className="text-4xl sm:text-7xl font-black text-slate-900 tracking-tight leading-[1.1]">
+              
+              <h1 className="text-[clamp(1.75rem,9vw,5rem)] font-[900] text-slate-900 tracking-tighter leading-[1.05] break-keep px-2 sm:px-0">
                 {t.hero.title1} <br />
                 <span className="text-indigo-600 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">{t.hero.title2}</span>
               </h1>
-              <p className="text-base sm:text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto font-medium">
+              
+              <p className="text-sm sm:text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto font-bold px-4 opacity-80">
                 {t.hero.sub}
               </p>
 
-              <form onSubmit={handleAnalyze} className="relative max-w-2xl mx-auto mt-8 sm:mt-12 group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-                <div className="relative flex flex-col sm:flex-row gap-2 p-2 bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-slate-100">
+              <form onSubmit={handleAnalyze} className="relative max-w-2xl mx-auto mt-10 sm:mt-16 px-2 group">
+                <div className="absolute -inset-1.5 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-2xl sm:rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                <div className="relative flex flex-col sm:flex-row gap-3 p-2 bg-white rounded-2xl sm:rounded-[2.5rem] shadow-2xl border border-slate-100">
                   <div className="flex-1 flex items-center px-4 gap-3">
-                    <i className="fa-solid fa-link text-slate-300"></i>
+                    <i className="fa-solid fa-link text-indigo-300 text-sm"></i>
                     <input 
                       type="text" 
                       placeholder={t.input.placeholder}
                       value={url}
                       onChange={(e) => setUrl(e.target.value)}
-                      className="w-full bg-transparent border-none focus:ring-0 text-slate-700 font-medium placeholder:text-slate-300 h-12"
+                      className="w-full bg-transparent border-none focus:ring-0 text-slate-700 font-black text-sm sm:text-lg placeholder:text-slate-300 h-10 sm:h-14"
                     />
                   </div>
                   <button 
                     disabled={!url.trim()}
-                    className="h-12 px-8 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white rounded-xl sm:rounded-2xl font-black text-sm transition-all shadow-lg shadow-indigo-200 active:scale-95"
+                    className="h-12 sm:h-14 px-8 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white rounded-xl sm:rounded-[2rem] font-black text-xs sm:text-sm transition-all shadow-xl shadow-indigo-100 active:scale-95"
                   >
                     {t.input.button}
                   </button>
                 </div>
-                {error && <p className="mt-4 text-red-500 text-sm font-bold animate-bounce">{error}</p>}
+                {error && <p className="mt-4 text-red-500 text-[11px] sm:text-sm font-black animate-pulse">{error}</p>}
               </form>
             </div>
 
             {/* Features Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-              {t.features.map((f, i) => (
-                <div key={i} className="group p-6 sm:p-8 bg-white rounded-3xl border border-slate-100 hover:border-indigo-100 hover:shadow-xl hover:shadow-indigo-50 transition-all duration-300">
-                  <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all mb-6">
-                    <i className={`fa-solid ${['fa-fingerprint', 'fa-heart-pulse', 'fa-handshake', 'fa-map-location-dot', 'fa-chart-pie', 'fa-dna'][i]} text-xl`}></i>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 px-2">
+              {t.features.map((f: any, i: number) => (
+                <div key={i} className="group p-7 sm:p-10 bg-white rounded-3xl border border-slate-100 hover:border-indigo-200 hover:shadow-2xl hover:shadow-indigo-50/50 transition-all duration-300">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-50 rounded-xl sm:rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all mb-6">
+                    <i className={`fa-solid ${['fa-fingerprint', 'fa-heart-pulse', 'fa-handshake', 'fa-map-location-dot', 'fa-chart-pie', 'fa-dna'][i]} text-lg sm:text-xl`}></i>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-3">{f.title}</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed font-medium">{f.desc}</p>
+                  <h3 className="text-base sm:text-xl font-black text-slate-900 mb-3">{f.title}</h3>
+                  <p className="text-slate-500 text-xs sm:text-sm leading-relaxed font-bold opacity-80">{f.desc}</p>
                 </div>
               ))}
             </div>
@@ -316,27 +352,27 @@ const App: React.FC = () => {
         )}
 
         {isLoading && (
-          <div className="flex flex-col items-center justify-center py-20 sm:py-32 space-y-8 animate-pulse">
+          <div className="flex flex-col items-center justify-center py-24 sm:py-32 space-y-10">
             <div className="relative">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+              <div className="w-16 h-16 sm:w-28 sm:h-28 border-[6px] border-slate-100 border-t-indigo-600 rounded-full animate-spin"></div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <i className="fa-solid fa-bolt-lightning text-2xl sm:text-3xl text-indigo-600 animate-bounce"></i>
+                <i className="fa-solid fa-microchip text-xl sm:text-4xl text-indigo-600 animate-pulse"></i>
               </div>
             </div>
-            <div className="text-center space-y-3">
-              <h2 className="text-xl sm:text-3xl font-black text-slate-900">{t.loading.title}</h2>
-              <p className="text-slate-500 font-bold text-sm sm:text-base">{t.loading.sub}</p>
+            <div className="text-center space-y-3 px-6 max-w-sm sm:max-w-xl">
+              <h2 className="text-xl sm:text-4xl font-black text-slate-900 leading-tight">{t.loading.title}</h2>
+              <p className="text-slate-500 font-bold text-xs sm:text-lg opacity-80">{t.loading.sub}</p>
             </div>
           </div>
         )}
 
         {isTranslating && (
-          <div className="fixed inset-0 z-[60] bg-white/60 backdrop-blur-sm flex items-center justify-center">
-             <div className="bg-white p-8 rounded-3xl shadow-2xl border border-slate-100 flex flex-col items-center gap-6">
-                <div className="w-12 h-12 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+          <div className="fixed inset-0 z-[60] bg-white/70 backdrop-blur-md flex items-center justify-center p-6">
+             <div className="bg-white p-8 sm:p-14 rounded-[2.5rem] shadow-2xl border border-slate-100 flex flex-col items-center gap-6 max-w-xs sm:max-w-md w-full animate-in zoom-in duration-300">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin"></div>
                 <div className="text-center">
-                  <h3 className="font-black text-slate-900">{t.translating.title}</h3>
-                  <p className="text-xs text-slate-400 font-bold mt-1">{t.translating.sub}</p>
+                  <h3 className="font-black text-slate-900 text-sm sm:text-xl">{t.translating.title}</h3>
+                  <p className="text-[10px] sm:text-sm text-slate-400 font-bold mt-2">{t.translating.sub}</p>
                 </div>
              </div>
           </div>
@@ -347,19 +383,22 @@ const App: React.FC = () => {
         )}
       </main>
 
-      <footer className="py-12 border-t border-slate-100 bg-white">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-slate-200 rounded-md flex items-center justify-center text-white">
-              <i className="fa-solid fa-bolt-lightning text-[10px]"></i>
+      <footer className="py-12 sm:py-20 border-t border-slate-100 bg-white">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-10">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-xl">
+              <i className="fa-solid fa-bolt-lightning text-xs"></i>
             </div>
-            <span className="text-sm font-black text-slate-300 tracking-tighter">INFLUENCER INSIGHT PRO</span>
+            <div className="flex items-baseline font-black text-xs tracking-widest text-slate-400">
+              <span>INFLUENCER INSIGHT</span>
+              <span className="ml-1 animate-blink-gold">PRO</span>
+            </div>
           </div>
-          <p className="text-slate-400 text-xs font-bold">{t.footer}</p>
-          <div className="flex gap-6 text-slate-300">
-            <i className="fa-brands fa-instagram hover:text-indigo-600 cursor-pointer transition-colors"></i>
-            <i className="fa-brands fa-youtube hover:text-indigo-600 cursor-pointer transition-colors"></i>
-            <i className="fa-brands fa-x-twitter hover:text-indigo-600 cursor-pointer transition-colors"></i>
+          <p className="text-slate-300 text-[10px] sm:text-xs font-black uppercase tracking-widest text-center">{t.footer}</p>
+          <div className="flex gap-10 text-slate-300">
+            <i className="fa-brands fa-instagram text-2xl hover:text-indigo-600 cursor-pointer transition-all hover:scale-125"></i>
+            <i className="fa-brands fa-youtube text-2xl hover:text-indigo-600 cursor-pointer transition-all hover:scale-125"></i>
+            <i className="fa-brands fa-x-twitter text-2xl hover:text-indigo-600 cursor-pointer transition-all hover:scale-125"></i>
           </div>
         </div>
       </footer>

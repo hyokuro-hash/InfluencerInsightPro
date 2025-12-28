@@ -19,6 +19,19 @@
         .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 1); }
         .gradient-text { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
+        /* Gold Pro Animation */
+        @keyframes blink-gold {
+            0%, 100% { opacity: 1; filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6)); }
+            50% { opacity: 0; filter: drop-shadow(0 0 0px rgba(255, 215, 0, 0)); }
+        }
+        .animate-blink-gold {
+            animation: blink-gold 2s ease-in-out infinite;
+            color: #FFD700; /* Gold */
+            background: linear-gradient(135deg, #FFD700 0%, #FDB931 50%, #B8860B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         html { scroll-behavior: smooth; }
     </style>
 <script type="importmap">
