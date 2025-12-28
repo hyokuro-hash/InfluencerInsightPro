@@ -95,7 +95,8 @@ const App: React.FC = () => {
       const data = await analyzeInfluencer(url, lang);
       setReport(data);
     } catch (err: any) {
-      setError(err.message || "An error occurred during analysis.");
+      console.error("Caught error in App:", err);
+      setError(err.message || "분석 중 예기치 않은 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);
     }
@@ -223,12 +224,22 @@ const App: React.FC = () => {
                   </button>
                 </div>
                 {error && (
-                  <div className="mt-6 p-5 bg-red-50 border border-red-100 rounded-[2rem] animate-in slide-in-from-top-2 duration-300 max-w-lg mx-auto shadow-sm">
-                    <div className="flex items-center gap-3 text-red-600 mb-1">
-                      <i className="fa-solid fa-triangle-exclamation text-sm"></i>
-                      <span className="font-black text-xs uppercase tracking-widest">Analysis Error</span>
+                  <div className="mt-8 p-6 sm:p-8 bg-white border border-rose-100 rounded-[2rem] sm:rounded-[2.5rem] shadow-xl shadow-rose-50/50 animate-in slide-in-from-top-4 duration-500 max-w-xl mx-auto">
+                    <div className="flex items-center gap-3 text-rose-600 mb-4">
+                      <div className="w-8 h-8 rounded-full bg-rose-50 flex items-center justify-center">
+                        <i className="fa-solid fa-triangle-exclamation text-sm"></i>
+                      </div>
+                      <span className="font-black text-[10px] sm:text-xs uppercase tracking-widest">Configuration / Analysis Alert</span>
                     </div>
-                    <p className="text-red-500 text-[12px] sm:text-sm font-black leading-relaxed italic">{error}</p>
+                    <p className="text-slate-700 text-sm sm:text-base font-bold leading-relaxed mb-4">{error}</p>
+                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
+                       <p className="text-[10px] sm:text-xs text-slate-400 font-black uppercase">Checklist:</p>
+                       <ul className="text-[10px] sm:text-xs text-slate-500 font-bold space-y-1 list-disc list-inside">
+                         <li>제공된 API 키가 유효하며 결제가 활성화되어 있는지 확인</li>
+                         <li>배포 플랫폼의 환경 변수(Settings)에서 <b>API_KEY</b> 항목 확인</li>
+                         <li>입력된 URL이 공개된 소셜 미디어 프로필인지 확인</li>
+                       </ul>
+                    </div>
                   </div>
                 )}
               </form>
