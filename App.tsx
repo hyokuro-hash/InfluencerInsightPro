@@ -1,9 +1,9 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { AnalysisReport, Language } from './types';
 import { analyzeInfluencer, translateReport } from './services/geminiService';
 import ReportView from './components/ReportView';
 
-// Fix: Change type to Partial<Record<Language, any>> to allow defining only some languages while fallbacks handle missing ones.
 const translations: Partial<Record<Language, any>> = {
   ko: {
     logo: { first: '인플루언서', second: '인사이트', third: 'PRO' },
@@ -83,35 +83,46 @@ const App: React.FC = () => {
   const [hasKey, setHasKey] = useState<boolean | null>(null);
 
   const langMenuRef = useRef<HTMLDivElement>(null);
+  // Manual key bypass ref to avoid interval/check race conditions
+  const keyBypassRef = useRef(false);
+  
   const t = translations[lang] || translations.ko;
 
-  // Check key on mount and when it might change
   useEffect(() => {
     const checkKey = async () => {
+      // If we already manually bypassed, don't re-check to prevent flickering
+      if (keyBypassRef.current) return;
+
       if (window.aistudio) {
         try {
           const selected = await window.aistudio.hasSelectedApiKey();
-          // Important: Even if 'selected' is true, we must have a non-empty API_KEY string
-          setHasKey(selected && !!process.env.API_KEY);
+          // GUIDELINE: Rely on window.aistudio.hasSelectedApiKey and process.env.API_KEY
+          const isValid = selected || !!process.env.API_KEY;
+          setHasKey(isValid);
+          if (isValid) keyBypassRef.current = true;
         } catch (e) {
-          setHasKey(false);
+          setHasKey(!!process.env.API_KEY);
         }
       } else {
         setHasKey(!!process.env.API_KEY);
       }
     };
     checkKey();
-    
-    // Periodically check if key became available (e.g. after selection)
-    const interval = setInterval(checkKey, 2000);
-    return () => clearInterval(interval);
   }, []);
 
   const handleSelectKey = async () => {
     if (window.aistudio) {
-      await window.aistudio.openSelectKey();
-      // Assume success and refresh immediately
-      setHasKey(true);
+      try {
+        await window.aistudio.openSelectKey();
+        // GUIDELINE: MUST assume success after triggering openSelectKey
+        keyBypassRef.current = true;
+        setHasKey(true);
+      } catch (e) {
+        console.error("Key selection failed", e);
+      }
+    } else {
+      // In non-AI Studio environments, we can't open a selector
+      setHasKey(!!process.env.API_KEY);
     }
   };
 
@@ -129,12 +140,6 @@ const App: React.FC = () => {
     e.preventDefault();
     if (!url.trim()) return;
 
-    // Double check key availability right before calling
-    if (!process.env.API_KEY) {
-      setHasKey(false);
-      return;
-    }
-
     setIsLoading(true);
     setError(null);
     setReport(null);
@@ -146,12 +151,13 @@ const App: React.FC = () => {
     } catch (err: any) {
       const msg = err.message || "";
       setError(msg);
-      // If error is clearly about missing/invalid key, force re-selection
+      // If API call explicitly fails with Key-related error, reset the bypass
       if (
         msg.includes("Requested entity was not found") || 
         msg.includes("API Key must be set") || 
         msg.includes("API 키")
       ) {
+        keyBypassRef.current = false;
         setHasKey(false);
       }
     } finally {
@@ -185,23 +191,23 @@ const App: React.FC = () => {
 
   const currentLangLabel = languages.find(l => l.code === lang)?.label || '한국어(KR)';
 
-  // Loading state while verifying environment
+  // Initial Load State
   if (hasKey === null) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin"></div>
-          <p className="font-black text-slate-400 text-[10px] tracking-widest uppercase">Verifying Session...</p>
+          <p className="font-black text-slate-400 text-[10px] tracking-widest uppercase">System Initializing...</p>
         </div>
       </div>
     );
   }
 
-  // Mandatory Key Selection Overlay
+  // Key Selection Screen
   if (hasKey === false) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-[2.5rem] p-8 sm:p-12 text-center space-y-8 shadow-2xl animate-in fade-in zoom-in-95 duration-500">
+      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-[2.5rem] p-8 sm:p-12 text-center space-y-8 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] animate-in fade-in zoom-in-95 duration-500">
           <div className="w-20 h-20 bg-indigo-50 rounded-3xl flex items-center justify-center text-indigo-600 mx-auto text-3xl animate-bounce">
             <i className="fa-solid fa-key"></i>
           </div>
@@ -334,7 +340,7 @@ const App: React.FC = () => {
                       <span className="font-black text-xs uppercase tracking-widest">Analysis Error</span>
                     </div>
                     <p className="text-red-500 text-[12px] sm:text-sm font-black leading-relaxed italic">{error}</p>
-                    {error.includes("API 키") && (
+                    {(error.includes("API 키") || error.includes("failed")) && (
                       <button 
                         onClick={handleSelectKey}
                         className="mt-3 text-[11px] font-black text-indigo-600 underline hover:text-indigo-800"
