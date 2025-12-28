@@ -9,22 +9,29 @@ interface MetricsCardProps {
 const MetricsCard: React.FC<MetricsCardProps> = ({ metric }) => {
   const getTrendIcon = () => {
     switch (metric.trend) {
-      case 'up': return <i className="fa-solid fa-caret-up text-green-500"></i>;
-      case 'down': return <i className="fa-solid fa-caret-down text-red-500"></i>;
+      case 'up': return <i className="fa-solid fa-caret-up text-[10px]"></i>;
+      case 'down': return <i className="fa-solid fa-caret-down text-[10px]"></i>;
       default: return null;
     }
   };
 
+  const trendColorClass = metric.trend === 'up' ? 'text-emerald-500' : metric.trend === 'down' ? 'text-rose-500' : 'text-slate-400';
+
   return (
-    <div className="glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl flex flex-col justify-between transition-all hover:shadow-lg border border-slate-100">
-      <span className="text-[9px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 sm:mb-2 line-clamp-1">{metric.label}</span>
-      <div className="flex items-end justify-between gap-1">
-        <span className="text-lg sm:text-2xl font-black text-slate-800 break-all">{metric.value}</span>
-        <div className="flex flex-col items-end shrink-0">
+    <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-100/80 shadow-sm transition-all hover:shadow-md">
+      <div className="flex flex-col h-full justify-between">
+        <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-4 line-clamp-1">
+          {metric.label}
+        </span>
+        <div className="flex items-end justify-between gap-2">
+          <span className="text-xl sm:text-2xl font-extrabold text-slate-800 leading-none">
+            {metric.value}
+          </span>
           {metric.percentage && (
-            <span className={`text-[9px] sm:text-xs font-bold ${metric.trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
-              {getTrendIcon()} {metric.percentage}
-            </span>
+            <div className={`flex items-center gap-1 font-bold text-[11px] sm:text-xs mb-0.5 ${trendColorClass}`}>
+              {getTrendIcon()}
+              <span>{metric.percentage}</span>
+            </div>
           )}
         </div>
       </div>

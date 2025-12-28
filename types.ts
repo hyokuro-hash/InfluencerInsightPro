@@ -6,7 +6,7 @@ export enum Platform {
   TIKTOK = '틱톡'
 }
 
-export type Language = 'ko' | 'en' | 'ja' | 'zh' | 'vi';
+export type Language = 'ko' | 'en' | 'ja' | 'zh' | 'vi' | 'th' | 'id';
 
 export interface InfluencerMetric {
   label: string;
@@ -31,11 +31,19 @@ export interface GroundingSource {
   uri: string;
 }
 
+export interface ProfileHeader {
+  posts: string;
+  followers: string;
+  following: string;
+  imageUrl?: string;
+}
+
 export interface AnalysisReport {
   influencerName: string;
   platformName: string;
   niche: string;
   profileSummary: string;
+  profileHeader: ProfileHeader;
   metrics: InfluencerMetric[];
   contentPillars: ContentPillar[];
   sentiment: {
