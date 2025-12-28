@@ -95,9 +95,8 @@ const App: React.FC = () => {
       const data = await analyzeInfluencer(url, lang);
       setReport(data);
     } catch (err: any) {
-      console.error("Analysis UI error:", err);
-      // Simplify error reporting for better UX
-      setError(err.message || "분석 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+      console.error("UI Analysis Error:", err);
+      setError(err.message || "분석 중 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);
     }
@@ -236,9 +235,8 @@ const App: React.FC = () => {
                     <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 text-[10px] sm:text-xs text-slate-500 font-bold">
                        <p className="font-black text-slate-400 mb-1 uppercase">Recommended Check:</p>
                        <ul className="list-disc list-inside space-y-1">
-                         <li>배포 환경 설정에서 process.env.API_KEY가 등록되어 있는지 확인</li>
-                         <li>해당 API 키가 Gemini 3 모델 및 Search Grounding 권한을 가지고 있는지 확인</li>
-                         <li>입력된 URL이 공개된 프로필 주소인지 확인</li>
+                         <li>배포 환경 설정(Environment Variables)에서 <b>API_KEY</b>가 올바르게 등록되어 있는지 확인</li>
+                         <li>입력된 URL이 공개된 소셜 미디어 프로필인지 확인</li>
                        </ul>
                     </div>
                   </div>
