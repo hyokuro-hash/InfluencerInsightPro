@@ -119,7 +119,16 @@ const extractJson = (text: string) => {
 };
 
 export const analyzeInfluencer = async (url: string, lang: Language = 'ko'): Promise<AnalysisReport> => {
-  // CRITICAL: Always create a new instance right before calling
+  // CRITICAL: Check key existence before SDK init
+  if (!process.env.API_KEY || process.env.API_KEY === "") {
+    const keyError = {
+      ko: "API 키가 설정되지 않았습니다. 상단 또는 팝업을 통해 유료 프로젝트의 API 키를 선택해 주세요.",
+      en: "API Key is not set. Please select an API key from a paid GCP project."
+    };
+    throw new Error(lang === 'ko' ? keyError.ko : keyError.en);
+  }
+
+  // CRITICAL: Always create a new instance right before calling with the environment key
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const targetLanguage = getLanguageName(lang);
   
@@ -141,7 +150,7 @@ Return a valid JSON object matching the requested schema.`;
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-pro-image-preview', // Using pro-image model for best grounding/search
+      model: 'gemini-3-pro-image-preview', // High-quality image & search model
       contents: prompt,
       config: {
         systemInstruction: `You are a precision SNS auditor. 
@@ -150,7 +159,7 @@ Return a valid JSON object matching the requested schema.`;
         Use Google Search to verify the most recent figures.`,
         tools: [{ googleSearch: {} }],
         // responseMimeType and responseSchema are NOT supported for gemini-3-pro-image-preview
-        thinkingConfig: { thinkingBudget: 8000 }
+        thinkingConfig: { thinkingBudget: 4000 } // Reduced budget for faster response
       },
     });
 
@@ -179,8 +188,8 @@ Return a valid JSON object matching the requested schema.`;
   } catch (error: any) {
     console.error("Gemini API Error:", error);
     
-    if (error.message?.includes("Requested entity was not found")) {
-      throw new Error("Requested entity was not found. Please re-select your API key.");
+    if (error.message?.includes("Requested entity was not found") || error.message?.includes("API Key must be set")) {
+      throw new Error("API 키 인증에 실패했습니다. 유료 플랜이 활성화된 API 키를 다시 선택해 주세요.");
     }
 
     const errorMessages = {
@@ -197,6 +206,8 @@ Return a valid JSON object matching the requested schema.`;
 };
 
 export const translateReport = async (sourceReport: AnalysisReport, targetLang: Language): Promise<AnalysisReport> => {
+  if (!process.env.API_KEY) return sourceReport;
+
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const targetLanguageName = getLanguageName(targetLang);
 

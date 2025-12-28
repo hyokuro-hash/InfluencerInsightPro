@@ -69,14 +69,14 @@ const translations: Record<Language, any> = {
     },
     input: { placeholder: 'URLを入力してください', button: 'レポート作成' },
     loading: { title: 'データを精密分析中です...', sub: 'トレンドの関連성을 추출하고 있습니다. ' },
-    translating: { title: '言語の最適化中...', sub: 'AI가 내용를 로컬라이즈하고 있습니다.' },
+    translating: { title: '言語の最適화中...', sub: 'AI가 내용을 현지화하고 있습니다.' },
     features: [
-      { title: '自動プラットフォーム識別', desc: 'URLだけでチャンネルを識別합니다.' },
-      { title: '精密感情分析', desc: 'コメントの反応をリアルタイム指数で 분류합니다.' },
-      { title: 'ブランドコラボガイド', desc: '最適なブランド適合성을 제안합니다' },
-      { title: 'チャンネル成長ロード맵', desc: '飛躍のための具体的な戦略を提供합니다.' },
-      { title: 'トレンド拡張性分析', desc: '他プラットフォームへの拡張可能性を診断합니다.' },
-      { title: 'コンテンツDNA抽出', desc: '核心テーマとスタイルを定義합니다.' }
+      { title: '자동 플랫폼 식별', desc: '주소만으로 채널을 스스로 판별합니다.' },
+      { title: '정밀 감성 분석', desc: '댓글 반응을 실시간 지수로 분류합니다.' },
+      { title: '브랜드 협업 가이드', desc: '최적의 브랜드 적합성을 제안합니다.' },
+      { title: '채널 성장 로드맵', desc: '도약을 위한 구체적 전략을 제공합니다.' },
+      { title: '트렌드 확장성 분석', desc: '타 플랫폼 확장 가능성을 진단합니다.' },
+      { title: '콘텐츠 DNA 추출', desc: '핵심 주제와 스타일을 정의합니다.' }
     ],
     footer: '© 2024 Influencer Insight Pro.',
     apiKeyNeeded: {
@@ -223,8 +223,15 @@ const App: React.FC = () => {
   useEffect(() => {
     const checkKey = async () => {
       if (window.aistudio) {
-        const selected = await window.aistudio.hasSelectedApiKey();
-        setHasKey(selected);
+        try {
+          const selected = await window.aistudio.hasSelectedApiKey();
+          setHasKey(selected);
+        } catch (e) {
+          setHasKey(false);
+        }
+      } else {
+        // Fallback for non-aistudio environments (not expected here)
+        setHasKey(true);
       }
     };
     checkKey();
@@ -233,7 +240,8 @@ const App: React.FC = () => {
   const handleSelectKey = async () => {
     if (window.aistudio) {
       await window.aistudio.openSelectKey();
-      setHasKey(true); // Assume success per guidelines
+      // guidelines: proceed assuming success to avoid race conditions
+      setHasKey(true);
     }
   };
 
@@ -251,6 +259,15 @@ const App: React.FC = () => {
     e.preventDefault();
     if (!url.trim()) return;
 
+    // Double check key before analysis
+    if (window.aistudio) {
+      const selected = await window.aistudio.hasSelectedApiKey();
+      if (!selected) {
+        setHasKey(false);
+        return;
+      }
+    }
+
     setIsLoading(true);
     setError(null);
     setReport(null);
@@ -261,7 +278,7 @@ const App: React.FC = () => {
       setReport(data);
     } catch (err: any) {
       setError(err.message);
-      if (err.message.includes("Requested entity was not found")) {
+      if (err.message.includes("Requested entity was not found") || err.message.includes("API Key must be set")) {
         setHasKey(false);
       }
     } finally {
@@ -295,22 +312,34 @@ const App: React.FC = () => {
 
   const currentLangLabel = languages.find(l => l.code === lang)?.label || '한국어(KR)';
 
+  // Initial Key Verification state
+  if (hasKey === null) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin"></div>
+          <p className="font-black text-slate-400 text-xs tracking-widest uppercase">Initializing Security...</p>
+        </div>
+      </div>
+    );
+  }
+
   // Key Selection Overlay
   if (hasKey === false) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-[2.5rem] p-8 sm:p-12 text-center space-y-8 shadow-2xl">
+        <div className="max-w-md w-full bg-white rounded-[2.5rem] p-8 sm:p-12 text-center space-y-8 shadow-2xl animate-in fade-in zoom-in-95 duration-500">
           <div className="w-20 h-20 bg-indigo-50 rounded-3xl flex items-center justify-center text-indigo-600 mx-auto text-3xl animate-bounce">
             <i className="fa-solid fa-key"></i>
           </div>
           <div className="space-y-4">
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">{t.apiKeyNeeded.title}</h2>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">{t.apiKeyNeeded.title}</h2>
             <p className="text-slate-500 font-bold leading-relaxed">{t.apiKeyNeeded.desc}</p>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-4 pt-4">
             <button 
               onClick={handleSelectKey}
-              className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-sm hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100"
+              className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black text-sm hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 active:scale-95"
             >
               {t.apiKeyNeeded.button}
             </button>
@@ -318,7 +347,7 @@ const App: React.FC = () => {
               href="https://ai.google.dev/gemini-api/docs/billing" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="block text-indigo-500 text-xs font-black underline"
+              className="block text-indigo-400 text-[11px] font-black underline hover:text-indigo-600"
             >
               {t.apiKeyNeeded.linkText}
             </a>
@@ -425,7 +454,11 @@ const App: React.FC = () => {
                     {t.input.button}
                   </button>
                 </div>
-                {error && <p className="mt-4 text-red-500 text-[11px] sm:text-sm font-black animate-pulse max-w-md mx-auto">{error}</p>}
+                {error && (
+                  <div className="mt-6 p-4 bg-red-50 border border-red-100 rounded-2xl animate-in slide-in-from-top-2 duration-300 max-w-md mx-auto">
+                    <p className="text-red-500 text-[11px] sm:text-xs font-black text-center leading-relaxed italic">{error}</p>
+                  </div>
+                )}
               </form>
             </div>
 

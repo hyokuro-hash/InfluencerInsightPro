@@ -71,18 +71,19 @@ const translations = {
 const ReportView: React.FC<ReportViewProps> = ({ report, onReset, lang, originalUrl }) => {
   const t = (translations[lang as keyof typeof translations] || translations.ko) as any;
 
+  // Safe data extraction for charts
   const sentimentData = [
-    { name: t.sentiment.pos, value: report.sentiment.positive || 0, color: '#22c55e' },
-    { name: t.sentiment.neu, value: report.sentiment.neutral || 0, color: '#94a3b8' },
-    { name: t.sentiment.neg, value: report.sentiment.negative || 0, color: '#ef4444' },
+    { name: t.sentiment.pos, value: report?.sentiment?.positive ?? 0, color: '#22c55e' },
+    { name: t.sentiment.neu, value: report?.sentiment?.neutral ?? 0, color: '#94a3b8' },
+    { name: t.sentiment.neg, value: report?.sentiment?.negative ?? 0, color: '#ef4444' },
   ];
 
-  const pillarData = (report.contentPillars || []).map(p => ({
+  const pillarData = (report?.contentPillars || []).map(p => ({
     name: p.topic,
     value: p.weight
   }));
 
-  const percentile = 100 - Math.round((report.score || 0) / 1.1);
+  const percentile = 100 - Math.round((report?.score || 0) / 1.1);
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-10 sm:space-y-16 animate-in fade-in duration-700 pb-12 sm:pb-24">
@@ -111,7 +112,7 @@ const ReportView: React.FC<ReportViewProps> = ({ report, onReset, lang, original
               
               <div className="relative">
                 <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full border-2 sm:border-4 border-slate-50 p-1 bg-white shadow-xl overflow-hidden relative z-10 group transition-transform hover:scale-105">
-                  {report.profileHeader.imageUrl ? (
+                  {report?.profileHeader?.imageUrl ? (
                     <img src={report.profileHeader.imageUrl} alt="Profile" className="w-full h-full rounded-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-slate-50 rounded-full flex items-center justify-center text-slate-200">
@@ -126,24 +127,24 @@ const ReportView: React.FC<ReportViewProps> = ({ report, onReset, lang, original
               </div>
 
               <div className="text-center space-y-1.5 relative z-10">
-                <h3 className="text-xl sm:text-3xl font-[900] text-slate-900 tracking-tighter">{report.influencerName}</h3>
+                <h3 className="text-xl sm:text-3xl font-[900] text-slate-900 tracking-tighter">{report?.influencerName || 'Unknown'}</h3>
                 <p className="text-[9px] sm:text-[11px] font-black text-indigo-500 uppercase tracking-widest bg-indigo-50 px-3 py-1 rounded-full inline-block">
-                  {report.platformName} Live Verified
+                  {report?.platformName || 'Social'} Live Verified
                 </p>
               </div>
 
               <div className="w-full grid grid-cols-3 gap-2 border-y border-slate-100 py-6 sm:py-8 relative z-10">
                 <div className="text-center">
                   <span className="block text-[8px] sm:text-[10px] font-black text-slate-300 uppercase tracking-tighter mb-1">{t.posts}</span>
-                  <span className="text-base sm:text-2xl font-black text-slate-800 tabular-nums leading-none">{report.profileHeader.posts}</span>
+                  <span className="text-base sm:text-2xl font-black text-slate-800 tabular-nums leading-none">{report?.profileHeader?.posts || '-'}</span>
                 </div>
                 <div className="text-center border-x border-slate-100">
                   <span className="block text-[8px] sm:text-[10px] font-black text-slate-300 uppercase tracking-tighter mb-1">{t.followers}</span>
-                  <span className="text-base sm:text-2xl font-black text-indigo-600 tabular-nums leading-none">{report.profileHeader.followers}</span>
+                  <span className="text-base sm:text-2xl font-black text-indigo-600 tabular-nums leading-none">{report?.profileHeader?.followers || '-'}</span>
                 </div>
                 <div className="text-center">
                   <span className="block text-[8px] sm:text-[10px] font-black text-slate-300 uppercase tracking-tighter mb-1">{t.following}</span>
-                  <span className="text-base sm:text-2xl font-black text-slate-800 tabular-nums leading-none">{report.profileHeader.following}</span>
+                  <span className="text-base sm:text-2xl font-black text-slate-800 tabular-nums leading-none">{report?.profileHeader?.following || '-'}</span>
                 </div>
               </div>
 
@@ -164,13 +165,13 @@ const ReportView: React.FC<ReportViewProps> = ({ report, onReset, lang, original
         <div className="lg:col-span-7 xl:col-span-8 order-1 lg:order-2 flex flex-col justify-center space-y-8 sm:space-y-12">
           <div className="space-y-4 sm:space-y-6">
             <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-              <h1 className="text-4xl sm:text-6xl xl:text-7xl font-[900] text-slate-900 tracking-tighter leading-[0.9] break-keep">{report.influencerName}</h1>
+              <h1 className="text-4xl sm:text-6xl xl:text-7xl font-[900] text-slate-900 tracking-tighter leading-[0.9] break-keep">{report?.influencerName}</h1>
               <span className="px-4 py-1.5 sm:px-5 sm:py-2 bg-indigo-600 text-white text-[10px] sm:text-xs font-black rounded-full uppercase tracking-widest shadow-xl shadow-indigo-100/50">
-                {report.niche}
+                {report?.niche}
               </span>
             </div>
             <p className="text-base sm:text-xl xl:text-2xl text-slate-500 leading-relaxed font-bold break-keep">
-              {report.profileSummary}
+              {report?.profileSummary}
             </p>
           </div>
 
@@ -178,7 +179,7 @@ const ReportView: React.FC<ReportViewProps> = ({ report, onReset, lang, original
             <div className="space-y-1">
               <span className="block text-[10px] sm:text-[11px] font-black text-slate-300 uppercase tracking-[0.2em]">{t.scoreLabel}</span>
               <div className="flex items-baseline gap-1.5">
-                <span className="text-5xl sm:text-7xl font-black text-indigo-600 tracking-tighter leading-none">{report.score}</span>
+                <span className="text-5xl sm:text-7xl font-black text-indigo-600 tracking-tighter leading-none">{report?.score || 0}</span>
                 <span className="text-sm sm:text-lg font-black text-indigo-200">/ 100</span>
               </div>
             </div>
@@ -206,7 +207,7 @@ const ReportView: React.FC<ReportViewProps> = ({ report, onReset, lang, original
           </button>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
-          {report.metrics.map((m, idx) => (
+          {(report?.metrics || []).map((m, idx) => (
             <MetricsCard key={idx} metric={m} />
           ))}
         </div>
@@ -233,7 +234,7 @@ const ReportView: React.FC<ReportViewProps> = ({ report, onReset, lang, original
             </ResponsiveContainer>
           </div>
           <div className="space-y-4">
-            {(report.contentPillars || []).slice(0, 3).map((p, idx) => (
+            {(report?.contentPillars || []).slice(0, 3).map((p, idx) => (
               <div key={idx} className="p-5 sm:p-6 bg-slate-50 rounded-2xl sm:rounded-[1.5rem] border border-slate-100 transition-colors hover:bg-white hover:border-indigo-100 group">
                 <div className="flex items-center justify-between mb-2 sm:mb-3">
                   <h4 className="font-black text-slate-800 text-sm sm:text-base group-hover:text-indigo-600 transition-colors">{p.topic}</h4>
@@ -253,7 +254,6 @@ const ReportView: React.FC<ReportViewProps> = ({ report, onReset, lang, original
             <h2 className="text-2xl sm:text-3xl font-[900] text-slate-900 tracking-tighter">{t.sentimentHeader}</h2>
           </div>
           <div className="flex-1 min-h-[240px] sm:min-h-[300px] flex items-center justify-center">
-            {/* Added missing ResponsiveContainer opening tag to match the closing tag on line 385 */}
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie data={sentimentData} cx="50%" cy="50%" innerRadius={70} outerRadius={100} paddingAngle={10} dataKey="value">
@@ -268,7 +268,7 @@ const ReportView: React.FC<ReportViewProps> = ({ report, onReset, lang, original
           </div>
           <div className="p-6 sm:p-8 bg-indigo-50/50 rounded-[1.5rem] sm:rounded-[2rem] border border-indigo-100 italic text-slate-700 text-sm sm:text-lg leading-relaxed relative mt-2 font-bold break-keep">
             <i className="fa-solid fa-quote-left absolute -top-4 -left-2 text-indigo-200 text-4xl opacity-50"></i>
-            "{report.sentiment?.summary}"
+            "{report?.sentiment?.summary || 'No audience sentiment data available.'}"
           </div>
         </div>
       </div>
@@ -286,7 +286,7 @@ const ReportView: React.FC<ReportViewProps> = ({ report, onReset, lang, original
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-10">
-            {(report.growthStrategy || []).map((step, idx) => (
+            {(report?.growthStrategy || []).map((step, idx) => (
               <div key={idx} className="relative p-7 sm:p-10 bg-slate-50/50 rounded-[2rem] sm:rounded-[2.5rem] border border-slate-100 transition-all hover:scale-[1.03] hover:bg-white hover:shadow-2xl group">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-600 text-white rounded-xl sm:rounded-2xl flex items-center justify-center font-black text-base sm:text-xl mb-6 sm:mb-8 group-hover:rotate-6 transition-transform">
                   {idx + 1}
@@ -309,7 +309,7 @@ const ReportView: React.FC<ReportViewProps> = ({ report, onReset, lang, original
             <h2 className="text-2xl sm:text-4xl font-[900] text-slate-900 tracking-tighter">{t.futureHeader}</h2>
           </div>
           <div className="bg-slate-50 p-7 sm:p-10 rounded-[1.5rem] sm:rounded-[2.5rem] border border-slate-100 leading-relaxed text-slate-600 font-bold text-sm sm:text-xl break-keep">
-            {report.scalabilityGuide}
+            {report?.scalabilityGuide || 'No scalability guide available.'}
           </div>
         </div>
 
@@ -320,14 +320,14 @@ const ReportView: React.FC<ReportViewProps> = ({ report, onReset, lang, original
               {t.collabHeader}
             </h3>
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              {(report.brandAffinity || []).map((brand, idx) => (
+              {(report?.brandAffinity || []).map((brand, idx) => (
                 <span key={idx} className="px-3.5 py-1.5 sm:px-5 sm:py-2 bg-indigo-600 text-white rounded-full text-[10px] sm:text-xs font-black uppercase tracking-widest shadow-md">
                   {brand}
                 </span>
               ))}
             </div>
             <ul className="space-y-5">
-              {(report.recommendations || []).map((rec, idx) => (
+              {(report?.recommendations || []).map((rec, idx) => (
                 <li key={idx} className="flex gap-4 items-start">
                   <div className="mt-0.5 flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-black border border-emerald-100 shadow-sm">
                     <i className="fa-solid fa-check"></i>
@@ -346,7 +346,7 @@ const ReportView: React.FC<ReportViewProps> = ({ report, onReset, lang, original
       </div>
 
       {/* Grounding Sources Section */}
-      {report.sources && report.sources.length > 0 && (
+      {report?.sources && report.sources.length > 0 && (
         <div className="px-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
           <div className="p-8 bg-slate-100/50 rounded-[2rem] border border-slate-200">
             <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
