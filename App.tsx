@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { AnalysisReport, Language } from './types';
 import { analyzeInfluencer, translateReport } from './services/geminiService';
 import ReportView from './components/ReportView';
 
-const translations: Record<Language, any> = {
+// Fix: Change type to Partial<Record<Language, any>> to allow defining only some languages while fallbacks handle missing ones.
+const translations: Partial<Record<Language, any>> = {
   ko: {
     logo: { first: '인플루언서', second: '인사이트', third: 'PRO' },
     nav: { usage: '이용 안내', enterprise: '엔터프라이즈', login: '로그인' },
@@ -26,10 +26,10 @@ const translations: Record<Language, any> = {
     ],
     footer: '© 2024 Influencer Insight Pro.',
     apiKeyNeeded: {
-      title: '실시간 분석을 위해 API 키가 필요합니다',
-      desc: '구글 검색 연동 기능을 사용하려면 유료 플랜이 활성화된 API 키 선택이 필요합니다.',
-      button: 'API 키 선택하기',
-      linkText: '결제 정보 설정 안내'
+      title: '유료 API 키 선택이 필요합니다',
+      desc: '실시간 검색 및 분석 기능을 사용하려면 구글 AI 스튜디오에서 결제가 활성화된 프로젝트의 API 키를 선택해야 합니다.',
+      button: 'API 키 선택하러 가기',
+      linkText: '결제 및 플랜 설정 안내'
     }
   },
   en: {
@@ -58,141 +58,6 @@ const translations: Record<Language, any> = {
       button: 'Select API Key',
       linkText: 'Billing Documentation'
     }
-  },
-  ja: {
-    logo: { first: 'Influencer', second: 'Insight', third: 'PRO' },
-    nav: { usage: 'ご利用ガイド', enterprise: 'エンタープライズ', login: 'ログイン' },
-    hero: {
-      title1: '인플루언서의 가치를',
-      title2: '데이터로 증명하세요',
-      sub: '단순 분석을 넘어, 성장을 위한 로드맵을 제시합니다. AI가 자동으로 플랫폼을 식별하고 딥다이브 리포트를 생성합니다.'
-    },
-    input: { placeholder: 'URLを入力してください', button: 'レポート作成' },
-    loading: { title: 'データを精密分析中です...', sub: 'トレンドの関連성을 추출하고 있습니다. ' },
-    translating: { title: '言語の最適화中...', sub: 'AI가 내용을 현지화하고 있습니다.' },
-    features: [
-      { title: '자동 플랫폼 식별', desc: '주소만으로 채널을 스스로 판별합니다.' },
-      { title: '정밀 감성 분석', desc: '댓글 반응을 실시간 지수로 분류합니다.' },
-      { title: '브랜드 협업 가이드', desc: '최적의 브랜드 적합성을 제안합니다.' },
-      { title: '채널 성장 로드맵', desc: '도약을 위한 구체적 전략을 제공합니다.' },
-      { title: '트렌드 확장성 분석', desc: '타 플랫폼 확장 가능성을 진단합니다.' },
-      { title: '콘텐츠 DNA 추출', desc: '핵심 주제와 스타일을 정의합니다.' }
-    ],
-    footer: '© 2024 Influencer Insight Pro.',
-    apiKeyNeeded: {
-      title: 'APIキーが必要です',
-      desc: 'リアルタイム検索を使用するには、支払い情報が設定されたプロジェクトのAPIキーを選択してください。',
-      button: 'APIキーを選択',
-      linkText: '課金ドキュメント'
-    }
-  },
-  zh: {
-    logo: { first: 'Influencer', second: 'Insight', third: 'PRO' },
-    nav: { usage: '使用指南', enterprise: '企业版', login: '登录' },
-    hero: {
-      title1: '用数据证明',
-      title2: '网红의 价值',
-      sub: '超越简单的分析，提供成长路线图。AI 自动生成深度分析报告。'
-    },
-    input: { placeholder: '输入 URL', button: '生成报告' },
-    loading: { title: '正在分析数据...', sub: '正在提取增长指南和趋势相关性。' },
-    translating: { title: '正在优化语言...', sub: 'AI 正在本地化内容。' },
-    features: [
-      { title: '自动平台识别', desc: '从 URL 自动识别平台。' },
-      { title: '精准情感分析', desc: '实时分析粉丝评论情感。' },
-      { title: '品牌合作指南', desc: '建议最匹配的品牌。' },
-      { title: '增长路线图', desc: '提供具体的成长策略。' },
-      { title: '趋势扩展分析', desc: '分析多平台扩展潜力。' },
-      { title: '内容 DNA 提取', desc: '定义核心主题和风格。' }
-    ],
-    footer: '© 2024 Influencer Insight Pro.',
-    apiKeyNeeded: {
-      title: '需要 API 密钥',
-      desc: '要使用实时搜索，请选择一个已启用结算功能的项目的 API 密钥。',
-      button: '选择 API 密钥',
-      linkText: '结算说明文档'
-    }
-  },
-  vi: {
-    logo: { first: 'Influencer', second: 'Insight', third: 'PRO' },
-    nav: { usage: 'Hướng dẫn', enterprise: 'Doanh nghiệp', login: 'Đăng nhập' },
-    hero: {
-      title1: 'Chứng minh giá trị',
-      title2: 'bằng dữ liệu',
-      sub: 'Cung cấp lộ trình tăng trưởng. AI tự động nhận diện nền tảng và tạo báo cáo.'
-    },
-    input: { placeholder: 'Nhập URL', button: 'Tạo báo cáo' },
-    loading: { title: 'Đang phân tích dữ liệu...', sub: 'Đang trích xuất hướng dẫn tăng trưởng.' },
-    translating: { title: 'Đang tối ưu ngôn ngữ...', sub: 'AI đang bản địa hóa nội dung.' },
-    features: [
-      { title: 'Tự động nhận diện', desc: 'Xác định nền tảng bằng URL.' },
-      { title: 'Phân tích cảm xúc', desc: 'Phân loại cảm xúc khán giả.' },
-      { title: 'Hướng dẫn hợp tác', desc: 'Đề xuất mức độ phù hợp.' },
-      { title: 'Lộ trình phát triển', desc: 'Chiến lược đưa kênh lên tầm cao mới.' },
-      { title: 'Phân tích xu hướng', desc: 'Chẩn đoán tiềm năng mở rộng.' },
-      { title: 'Trích xuất DNA', desc: 'Xác định phong cách bằng dữ liệu.' }
-    ],
-    footer: '© 2024 Influencer Insight Pro.',
-    apiKeyNeeded: {
-      title: 'Yêu cầu API Key',
-      desc: 'Để sử dụng tìm kiếm thời gian thực, vui lòng chọn API Key từ một dự án đã thanh toán.',
-      button: 'Chọn API Key',
-      linkText: 'Tài liệu thanh toán'
-    }
-  },
-  th: {
-    logo: { first: 'Influencer', second: 'Insight', third: 'PRO' },
-    nav: { usage: 'คู่มือ', enterprise: 'องค์กร', login: 'เข้าสู่ระบบ' },
-    hero: {
-      title1: 'พิสูจน์คุณค่าอินฟลูเอนเซอร์',
-      title2: 'ด้วยข้อมูลเชิงลึก',
-      sub: 'นำเสนอแผนงานเพื่อการเติบโต AI ระบุแพลตฟอร์มและสร้างรายงานเชิงลึกโดยอัตโนมัติ'
-    },
-    input: { placeholder: 'ป้อน URL', button: 'สร้างรายงาน' },
-    loading: { title: 'กำลังวิเคราะห์ข้อมูล...', sub: 'กำลังดึงคู่มือการเติบโตและความเชื่อมโยงของเทรนด์' },
-    translating: { title: 'กำลังปรับปรุงภาษา...', sub: 'AI กำลังปรับเนื้อหาให้เข้ากับท้องถิ่น' },
-    features: [
-      { title: 'ระบุแพลตฟอร์มอัตโนมัติ', desc: 'ระบุช่องจาก URL' },
-      { title: 'วิเคราะห์ความรู้สึกแม่นยำ', desc: 'จำแนกการตอบสนองของคอมเมนต์เป็นดัชนีความรู้สึก' },
-      { title: 'คู่มือความร่วมมือแบรนด์', desc: 'เสนอความเหมาะสมของแบรนด์ที่ดีที่สุด' },
-      { title: 'แผนงานการเติบโต', desc: 'กลยุทธ์เพื่อยกระดับช่องของคุณให้สูงขึ้น' },
-      { title: 'การวิเคราะห์การขยายเทรนด์', desc: 'วินิจฉัยศักยภาพในการขยายแพลตฟอร์ม' },
-      { title: 'การสกัด DNA เนื้อหา', desc: 'กำหนดหัวข้อหลักและสไตล์' }
-    ],
-    footer: '© 2024 Influencer Insight Pro.',
-    apiKeyNeeded: {
-      title: 'ต้องใช้ API Key',
-      desc: 'เพื่อใช้การค้นหาแบบเรียลไทม์ โปรดเลือก API Key จากโปรเจกต์ที่มีการชำระเงิน',
-      button: 'เลือก API Key',
-      linkText: 'เอกสารการเรียกเก็บเงิน'
-    }
-  },
-  id: {
-    logo: { first: 'Influencer', second: 'Insight', third: 'PRO' },
-    nav: { usage: 'Panduan', enterprise: 'Perusahaan', login: 'Masuk' },
-    hero: {
-      title1: 'Buktikan Nilai Influencer',
-      title2: 'dengan Data Mendalam',
-      sub: 'Menyediakan peta jalan pertumbuhan. AI secara otomatis mengidentifikasi platform dan menghasilkan laporan.'
-    },
-    input: { placeholder: 'Masukkan URL', button: 'Buat Laporan' },
-    loading: { title: 'Menganalisis data...', sub: 'Mengekstrak panduan pertumbuhan dan tren.' },
-    translating: { title: 'Mengoptimalkan bahasa...', sub: 'AI sedang melokalisasi konten.' },
-    features: [
-      { title: 'Deteksi Platform Otomatis', desc: 'Mengidentifikasi platform dari URL.' },
-      { title: 'Analisis Sentimen Presisi', desc: 'Mengklasifikasikan respons komentar ke dalam indeks sentimen.' },
-      { title: 'Panduan Kolaborasi Brand', desc: 'Menyarankan kesesuaian merek yang optimal.' },
-      { title: 'Peta Jalan Pertumbuhan', desc: 'Strategi untuk meningkatkan level saluran Anda.' },
-      { title: 'Analisis Skalabilitas Tren', desc: 'Mendiagnosis potensi ekspansi lintas platform.' },
-      { title: 'Ekstraksi DNA Konten', desc: 'Mendefinisikan topik dan gaya inti.' }
-    ],
-    footer: '© 2024 Influencer Insight Pro.',
-    apiKeyNeeded: {
-      title: 'Memerlukan API Key',
-      desc: 'Untuk menggunakan pencarian real-time, harap pilih API Key dari proyek berbayar.',
-      button: 'Pilih API Key',
-      linkText: 'Dokumentasi Penagihan'
-    }
   }
 };
 
@@ -220,27 +85,32 @@ const App: React.FC = () => {
   const langMenuRef = useRef<HTMLDivElement>(null);
   const t = translations[lang] || translations.ko;
 
+  // Check key on mount and when it might change
   useEffect(() => {
     const checkKey = async () => {
       if (window.aistudio) {
         try {
           const selected = await window.aistudio.hasSelectedApiKey();
-          setHasKey(selected);
+          // Important: Even if 'selected' is true, we must have a non-empty API_KEY string
+          setHasKey(selected && !!process.env.API_KEY);
         } catch (e) {
           setHasKey(false);
         }
       } else {
-        // Fallback for non-aistudio environments (not expected here)
-        setHasKey(true);
+        setHasKey(!!process.env.API_KEY);
       }
     };
     checkKey();
+    
+    // Periodically check if key became available (e.g. after selection)
+    const interval = setInterval(checkKey, 2000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleSelectKey = async () => {
     if (window.aistudio) {
       await window.aistudio.openSelectKey();
-      // guidelines: proceed assuming success to avoid race conditions
+      // Assume success and refresh immediately
       setHasKey(true);
     }
   };
@@ -259,13 +129,10 @@ const App: React.FC = () => {
     e.preventDefault();
     if (!url.trim()) return;
 
-    // Double check key before analysis
-    if (window.aistudio) {
-      const selected = await window.aistudio.hasSelectedApiKey();
-      if (!selected) {
-        setHasKey(false);
-        return;
-      }
+    // Double check key availability right before calling
+    if (!process.env.API_KEY) {
+      setHasKey(false);
+      return;
     }
 
     setIsLoading(true);
@@ -277,8 +144,14 @@ const App: React.FC = () => {
       const data = await analyzeInfluencer(url, lang);
       setReport(data);
     } catch (err: any) {
-      setError(err.message);
-      if (err.message.includes("Requested entity was not found") || err.message.includes("API Key must be set")) {
+      const msg = err.message || "";
+      setError(msg);
+      // If error is clearly about missing/invalid key, force re-selection
+      if (
+        msg.includes("Requested entity was not found") || 
+        msg.includes("API Key must be set") || 
+        msg.includes("API 키")
+      ) {
         setHasKey(false);
       }
     } finally {
@@ -312,19 +185,19 @@ const App: React.FC = () => {
 
   const currentLangLabel = languages.find(l => l.code === lang)?.label || '한국어(KR)';
 
-  // Initial Key Verification state
+  // Loading state while verifying environment
   if (hasKey === null) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin"></div>
-          <p className="font-black text-slate-400 text-xs tracking-widest uppercase">Initializing Security...</p>
+          <div className="w-12 h-12 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin"></div>
+          <p className="font-black text-slate-400 text-[10px] tracking-widest uppercase">Verifying Session...</p>
         </div>
       </div>
     );
   }
 
-  // Key Selection Overlay
+  // Mandatory Key Selection Overlay
   if (hasKey === false) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
@@ -455,8 +328,20 @@ const App: React.FC = () => {
                   </button>
                 </div>
                 {error && (
-                  <div className="mt-6 p-4 bg-red-50 border border-red-100 rounded-2xl animate-in slide-in-from-top-2 duration-300 max-w-md mx-auto">
-                    <p className="text-red-500 text-[11px] sm:text-xs font-black text-center leading-relaxed italic">{error}</p>
+                  <div className="mt-6 p-5 bg-red-50 border border-red-100 rounded-[2rem] animate-in slide-in-from-top-2 duration-300 max-w-lg mx-auto shadow-sm">
+                    <div className="flex items-center gap-3 text-red-600 mb-1">
+                      <i className="fa-solid fa-triangle-exclamation text-sm"></i>
+                      <span className="font-black text-xs uppercase tracking-widest">Analysis Error</span>
+                    </div>
+                    <p className="text-red-500 text-[12px] sm:text-sm font-black leading-relaxed italic">{error}</p>
+                    {error.includes("API 키") && (
+                      <button 
+                        onClick={handleSelectKey}
+                        className="mt-3 text-[11px] font-black text-indigo-600 underline hover:text-indigo-800"
+                      >
+                        지금 API 키 선택하기
+                      </button>
+                    )}
                   </div>
                 )}
               </form>

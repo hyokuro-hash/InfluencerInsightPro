@@ -119,16 +119,12 @@ const extractJson = (text: string) => {
 };
 
 export const analyzeInfluencer = async (url: string, lang: Language = 'ko'): Promise<AnalysisReport> => {
-  // CRITICAL: Check key existence before SDK init
+  // CRITICAL: Force error if key is empty to trigger selection UI in App.tsx
   if (!process.env.API_KEY || process.env.API_KEY === "") {
-    const keyError = {
-      ko: "API 키가 설정되지 않았습니다. 상단 또는 팝업을 통해 유료 프로젝트의 API 키를 선택해 주세요.",
-      en: "API Key is not set. Please select an API key from a paid GCP project."
-    };
-    throw new Error(lang === 'ko' ? keyError.ko : keyError.en);
+    throw new Error("API 키가 설정되지 않았습니다. 상단 또는 팝업을 통해 유료 프로젝트의 API 키를 선택해 주세요.");
   }
 
-  // CRITICAL: Always create a new instance right before calling with the environment key
+  // CRITICAL: Always create a new instance right before calling
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const targetLanguage = getLanguageName(lang);
   
@@ -159,7 +155,7 @@ Return a valid JSON object matching the requested schema.`;
         Use Google Search to verify the most recent figures.`,
         tools: [{ googleSearch: {} }],
         // responseMimeType and responseSchema are NOT supported for gemini-3-pro-image-preview
-        thinkingConfig: { thinkingBudget: 4000 } // Reduced budget for faster response
+        thinkingConfig: { thinkingBudget: 4000 }
       },
     });
 
@@ -188,7 +184,8 @@ Return a valid JSON object matching the requested schema.`;
   } catch (error: any) {
     console.error("Gemini API Error:", error);
     
-    if (error.message?.includes("Requested entity was not found") || error.message?.includes("API Key must be set")) {
+    const msg = error.message || "";
+    if (msg.includes("Requested entity was not found") || msg.includes("API Key must be set")) {
       throw new Error("API 키 인증에 실패했습니다. 유료 플랜이 활성화된 API 키를 다시 선택해 주세요.");
     }
 
@@ -215,7 +212,7 @@ export const translateReport = async (sourceReport: AnalysisReport, targetLang: 
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-pro-preview',
+      model: 'gemini-3-flash-preview', // Use flash for simple text task
       contents: prompt,
       config: {
         responseMimeType: "application/json",
