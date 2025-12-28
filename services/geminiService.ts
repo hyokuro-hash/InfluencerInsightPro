@@ -3,7 +3,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { AnalysisReport, Language, GroundingSource } from "../types";
 
-// 공통 스키마 정의
+// 공통 스키마 정의 (JSON 응답을 위해 사용)
 const reportSchema = {
   type: Type.OBJECT,
   properties: {
@@ -101,7 +101,6 @@ const getLanguageName = (lang: Language) => {
   }
 };
 
-// Robust JSON extraction
 const extractJson = (text: string) => {
   try {
     return JSON.parse(text);
@@ -119,42 +118,31 @@ const extractJson = (text: string) => {
 };
 
 export const analyzeInfluencer = async (url: string, lang: Language = 'ko'): Promise<AnalysisReport> => {
-  // CRITICAL: Force error if key is empty to trigger selection UI in App.tsx
-  if (!process.env.API_KEY || process.env.API_KEY === "") {
-    throw new Error("API 키가 설정되지 않았습니다. 상단 또는 팝업을 통해 유료 프로젝트의 API 키를 선택해 주세요.");
-  }
-
-  // CRITICAL: Always create a new instance right before calling
+  // Use gemini-3-pro-preview for deep analysis with Google Search
+  // This model uses process.env.API_KEY directly and does not force the 'openSelectKey' popup.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const targetLanguage = getLanguageName(lang);
   
   const prompt = `Perform an ULTRA-PRECISION REAL-TIME audit of the influencer profile at: ${url}.
 
 CORE MISSION:
-Extract the EXACT visual data shown in the profile header.
-1. "Posts" count
-2. "Followers" count
-3. "Following" count
-
-STRICT DATA VERIFICATION STEPS:
-1. Use Google Search to find current stats.
-2. Provide the data as raw strings seen on the platform.
-3. Calculate Engagement Rate and provide detailed metrics.
+Extract the EXACT visual data shown in the profile header (Posts, Followers, Following).
+Research the influencer's current content strategy, audience sentiment, and brand value.
 
 LANGUAGE: ${targetLanguage}.
 Return a valid JSON object matching the requested schema.`;
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-pro-image-preview', // High-quality image & search model
+      model: 'gemini-3-pro-preview', 
       contents: prompt,
       config: {
-        systemInstruction: `You are a precision SNS auditor. 
-        Extract raw data (followers, posts) from the live URL. 
+        systemInstruction: `You are a professional SNS auditor. 
         Always return a structured JSON response.
-        Use Google Search to verify the most recent figures.`,
+        Use Google Search to fetch live metrics and recent performance data from the given URL.`,
         tools: [{ googleSearch: {} }],
-        // responseMimeType and responseSchema are NOT supported for gemini-3-pro-image-preview
+        responseMimeType: "application/json",
+        responseSchema: reportSchema,
         thinkingConfig: { thinkingBudget: 4000 }
       },
     });
@@ -175,7 +163,6 @@ Return a valid JSON object matching the requested schema.`;
       });
     }
     
-    // Remove duplicates
     const uniqueSources = Array.from(new Set(groundingSources.map(s => s.uri)))
       .map(uri => groundingSources.find(s => s.uri === uri)!);
 
@@ -183,36 +170,19 @@ Return a valid JSON object matching the requested schema.`;
     return result;
   } catch (error: any) {
     console.error("Gemini API Error:", error);
-    
-    const msg = error.message || "";
-    if (msg.includes("Requested entity was not found") || msg.includes("API Key must be set")) {
-      throw new Error("API 키 인증에 실패했습니다. 유료 플랜이 활성화된 API 키를 다시 선택해 주세요.");
-    }
-
-    const errorMessages = {
-      ko: "실시간 데이터 분석 중 오류가 발생했습니다. URL이 정확한지 확인해 주세요.",
-      ja: "リアルタイム分析중에 오류가 발생했습니다.",
-      zh: "实时分析过程中出错。",
-      vi: "Đã xảy ra lỗi trong quá trình phân tích.",
-      th: "เกิดข้อผิดพลาดระหว่างการวิเคราะห์",
-      id: "Terjadi kesalahan selama analisis.",
-      en: "Error during real-time analysis."
-    };
-    throw new Error(errorMessages[lang] || errorMessages.en);
+    throw new Error(error.message || "분석 중 오류가 발생했습니다. API 키가 유효한지 확인해 주세요.");
   }
 };
 
 export const translateReport = async (sourceReport: AnalysisReport, targetLang: Language): Promise<AnalysisReport> => {
-  if (!process.env.API_KEY) return sourceReport;
-
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const targetLanguageName = getLanguageName(targetLang);
 
-  const prompt = `Translate the following influencer report to ${targetLanguageName}. Keep all numbers, metrics, and technical data EXACTLY as they are. Return only JSON. ${JSON.stringify(sourceReport)}`;
+  const prompt = `Translate the following influencer report to ${targetLanguageName}. Keep all numbers and metrics as they are. Return only JSON. ${JSON.stringify(sourceReport)}`;
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview', // Use flash for simple text task
+      model: 'gemini-3-flash-preview',
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -220,7 +190,7 @@ export const translateReport = async (sourceReport: AnalysisReport, targetLang: 
       },
     });
     const result = extractJson(response.text.trim()) as AnalysisReport;
-    result.sources = sourceReport.sources; // preserve sources
+    result.sources = sourceReport.sources;
     return result;
   } catch (error) {
     return sourceReport;

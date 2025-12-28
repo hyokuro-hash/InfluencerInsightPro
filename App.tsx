@@ -24,13 +24,7 @@ const translations: Partial<Record<Language, any>> = {
       { title: '트렌드 확장성 분석', desc: '타 플랫폼 확장 가능성을 진단합니다.' },
       { title: '콘텐츠 DNA 추출', desc: '핵심 주제와 스타일을 정의합니다.' }
     ],
-    footer: '© 2024 Influencer Insight Pro.',
-    apiKeyNeeded: {
-      title: '유료 API 키 선택이 필요합니다',
-      desc: '실시간 검색 및 분석 기능을 사용하려면 구글 AI 스튜디오에서 결제가 활성화된 프로젝트의 API 키를 선택해야 합니다.',
-      button: 'API 키 선택하러 가기',
-      linkText: '결제 및 플랜 설정 안내'
-    }
+    footer: '© 2024 Influencer Insight Pro.'
   },
   en: {
     logo: { first: 'Influencer', second: 'Insight', third: 'PRO' },
@@ -51,13 +45,7 @@ const translations: Partial<Record<Language, any>> = {
       { title: 'Trend Scalability', desc: 'Diagnoses expansion potential.' },
       { title: 'Content DNA Extraction', desc: 'Defines core topics and styles.' }
     ],
-    footer: '© 2024 Influencer Insight Pro.',
-    apiKeyNeeded: {
-      title: 'API Key Required',
-      desc: 'To use real-time search, please select an API key from a paid GCP project.',
-      button: 'Select API Key',
-      linkText: 'Billing Documentation'
-    }
+    footer: '© 2024 Influencer Insight Pro.'
   }
 };
 
@@ -80,28 +68,9 @@ const App: React.FC = () => {
   const [isTranslating, setIsTranslating] = useState(false);
   const [report, setReport] = useState<AnalysisReport | null>(null);
   const [error, setError] = useState<string | null>(null);
-  
-  // Directly check for process.env.API_KEY to avoid blocking
-  const [hasKey, setHasKey] = useState<boolean>(!!process.env.API_KEY);
 
   const langMenuRef = useRef<HTMLDivElement>(null);
   const t = translations[lang] || translations.ko;
-
-  useEffect(() => {
-    // One-time check for key selection if not already present in environment
-    if (!hasKey && window.aistudio) {
-      window.aistudio.hasSelectedApiKey().then(selected => {
-        if (selected) setHasKey(true);
-      }).catch(() => {});
-    }
-  }, [hasKey]);
-
-  const handleSelectKey = async () => {
-    if (window.aistudio) {
-      await window.aistudio.openSelectKey();
-      setHasKey(true); // Assume success per guidelines
-    }
-  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -126,12 +95,7 @@ const App: React.FC = () => {
       const data = await analyzeInfluencer(url, lang);
       setReport(data);
     } catch (err: any) {
-      const msg = err.message || "";
-      setError(msg);
-      // Only revert to key selection if API explicitly rejects the key
-      if (msg.includes("Requested entity was not found") || msg.includes("API Key")) {
-        setHasKey(false);
-      }
+      setError(err.message || "An error occurred during analysis.");
     } finally {
       setIsLoading(false);
     }
@@ -163,32 +127,8 @@ const App: React.FC = () => {
 
   const currentLangLabel = languages.find(l => l.code === lang)?.label || '한국어(KR)';
 
-  // If key is missing, show selection overlay
-  if (!hasKey) {
-    return (
-      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-[2.5rem] p-8 sm:p-12 text-center space-y-8 shadow-2xl animate-in fade-in zoom-in-95 duration-500">
-          <div className="w-20 h-20 bg-indigo-50 rounded-3xl flex items-center justify-center text-indigo-600 mx-auto text-3xl">
-            <i className="fa-solid fa-key"></i>
-          </div>
-          <div className="space-y-4">
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">{t.apiKeyNeeded.title}</h2>
-            <p className="text-slate-500 font-bold leading-relaxed">{t.apiKeyNeeded.desc}</p>
-          </div>
-          <button 
-            onClick={handleSelectKey}
-            className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black text-sm hover:bg-indigo-700 transition-all shadow-xl active:scale-95"
-          >
-            {t.apiKeyNeeded.button}
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 overflow-x-hidden">
-      {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-2 sm:gap-4">
           <div className="flex items-center gap-1.5 sm:gap-2 cursor-pointer shrink-0" onClick={reset}>
