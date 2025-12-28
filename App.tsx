@@ -95,8 +95,13 @@ const App: React.FC = () => {
       const data = await analyzeInfluencer(url, lang);
       setReport(data);
     } catch (err: any) {
-      console.error("Caught error in App:", err);
-      setError(err.message || "분석 중 예기치 않은 오류가 발생했습니다.");
+      console.error("Analysis error:", err);
+      // 구체적인 에러 메시지 처리
+      let userMessage = err.message || "분석 중 예기치 않은 오류가 발생했습니다.";
+      if (userMessage.includes("API Key") || userMessage.includes("browser")) {
+        userMessage = "시스템에 설정된 API 키가 유효하지 않거나 환경 변수 설정에 문제가 있습니다. 관리자에게 문의하세요.";
+      }
+      setError(userMessage);
     } finally {
       setIsLoading(false);
     }
@@ -229,15 +234,14 @@ const App: React.FC = () => {
                       <div className="w-8 h-8 rounded-full bg-rose-50 flex items-center justify-center">
                         <i className="fa-solid fa-triangle-exclamation text-sm"></i>
                       </div>
-                      <span className="font-black text-[10px] sm:text-xs uppercase tracking-widest">Configuration / Analysis Alert</span>
+                      <span className="font-black text-[10px] sm:text-xs uppercase tracking-widest">Analysis Alert</span>
                     </div>
                     <p className="text-slate-700 text-sm sm:text-base font-bold leading-relaxed mb-4">{error}</p>
-                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
-                       <p className="text-[10px] sm:text-xs text-slate-400 font-black uppercase">Checklist:</p>
-                       <ul className="text-[10px] sm:text-xs text-slate-500 font-bold space-y-1 list-disc list-inside">
-                         <li>제공된 API 키가 유효하며 결제가 활성화되어 있는지 확인</li>
-                         <li>배포 플랫폼의 환경 변수(Settings)에서 <b>API_KEY</b> 항목 확인</li>
-                         <li>입력된 URL이 공개된 소셜 미디어 프로필인지 확인</li>
+                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 text-[10px] sm:text-xs text-slate-500 font-bold">
+                       <p className="font-black text-slate-400 mb-1 uppercase">Recommended Check:</p>
+                       <ul className="list-disc list-inside space-y-1">
+                         <li>배포 환경에서 process.env.API_KEY가 올바르게 주입되었는지 확인</li>
+                         <li>입력된 URL이 유효한 소셜 미디어 프로필인지 확인</li>
                        </ul>
                     </div>
                   </div>
