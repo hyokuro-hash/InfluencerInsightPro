@@ -27,7 +27,8 @@ const translations = {
     posts: '게시물',
     followers: '팔로워',
     following: '팔로우',
-    sentiment: { pos: '긍정', neu: '중립', neg: '부정' }
+    sentiment: { pos: '긍정', neu: '중립', neg: '부정' },
+    sourcesLabel: '분석 근거 및 참고 자료'
   },
   en: {
     scoreLabel: 'Influence Score',
@@ -44,7 +45,8 @@ const translations = {
     posts: 'Posts',
     followers: 'Followers',
     following: 'Following',
-    sentiment: { pos: 'Pos', neu: 'Neu', neg: 'Neg' }
+    sentiment: { pos: 'Pos', neu: 'Neu', neg: 'Neg' },
+    sourcesLabel: 'Grounding Sources & References'
   },
   ja: {
     scoreLabel: '影響力スコア',
@@ -61,7 +63,8 @@ const translations = {
     posts: '投稿',
     followers: 'フォロワー',
     following: 'フォロー',
-    sentiment: { pos: '肯定', neu: '中立', neg: '否定' }
+    sentiment: { pos: '肯定', neu: '中立', neg: '否定' },
+    sourcesLabel: '分析の根拠と参照'
   }
 };
 
@@ -250,6 +253,7 @@ const ReportView: React.FC<ReportViewProps> = ({ report, onReset, lang, original
             <h2 className="text-2xl sm:text-3xl font-[900] text-slate-900 tracking-tighter">{t.sentimentHeader}</h2>
           </div>
           <div className="flex-1 min-h-[240px] sm:min-h-[300px] flex items-center justify-center">
+            {/* Added missing ResponsiveContainer opening tag to match the closing tag on line 385 */}
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie data={sentimentData} cx="50%" cy="50%" innerRadius={70} outerRadius={100} paddingAngle={10} dataKey="value">
@@ -340,6 +344,37 @@ const ReportView: React.FC<ReportViewProps> = ({ report, onReset, lang, original
           </div>
         </div>
       </div>
+
+      {/* Grounding Sources Section */}
+      {report.sources && report.sources.length > 0 && (
+        <div className="px-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <div className="p-8 bg-slate-100/50 rounded-[2rem] border border-slate-200">
+            <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+              <i className="fa-solid fa-magnifying-glass text-indigo-500"></i>
+              {t.sourcesLabel}
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {report.sources.map((source, idx) => (
+                <a 
+                  key={idx} 
+                  href={source.uri} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="p-4 bg-white rounded-xl border border-slate-200 hover:border-indigo-300 hover:shadow-lg transition-all flex items-center gap-3 group"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                    <i className="fa-solid fa-link text-xs"></i>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-black text-slate-800 truncate">{source.title}</p>
+                    <p className="text-[10px] text-slate-400 truncate mt-0.5">{new URL(source.uri).hostname}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
       
       <style>{`
         @keyframes scan {

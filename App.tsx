@@ -24,7 +24,13 @@ const translations: Record<Language, any> = {
       { title: '트렌드 확장성 분석', desc: '타 플랫폼 확장 가능성을 진단합니다.' },
       { title: '콘텐츠 DNA 추출', desc: '핵심 주제와 스타일을 정의합니다.' }
     ],
-    footer: '© 2024 Influencer Insight Pro.'
+    footer: '© 2024 Influencer Insight Pro.',
+    apiKeyNeeded: {
+      title: '실시간 분석을 위해 API 키가 필요합니다',
+      desc: '구글 검색 연동 기능을 사용하려면 유료 플랜이 활성화된 API 키 선택이 필요합니다.',
+      button: 'API 키 선택하기',
+      linkText: '결제 정보 설정 안내'
+    }
   },
   en: {
     logo: { first: 'Influencer', second: 'Insight', third: 'PRO' },
@@ -45,11 +51,17 @@ const translations: Record<Language, any> = {
       { title: 'Trend Scalability', desc: 'Diagnoses expansion potential.' },
       { title: 'Content DNA Extraction', desc: 'Defines core topics and styles.' }
     ],
-    footer: '© 2024 Influencer Insight Pro.'
+    footer: '© 2024 Influencer Insight Pro.',
+    apiKeyNeeded: {
+      title: 'API Key Required',
+      desc: 'To use real-time search, please select an API key from a paid GCP project.',
+      button: 'Select API Key',
+      linkText: 'Billing Documentation'
+    }
   },
   ja: {
     logo: { first: 'Influencer', second: 'Insight', third: 'PRO' },
-    nav: { usage: 'ご利用ガイド', enterprise: 'エン터프라이즈', login: 'ログイン' },
+    nav: { usage: 'ご利用ガイド', enterprise: 'エンタープライズ', login: 'ログイン' },
     hero: {
       title1: '인플루언서의 가치를',
       title2: '데이터로 증명하세요',
@@ -61,12 +73,18 @@ const translations: Record<Language, any> = {
     features: [
       { title: '自動プラットフォーム識別', desc: 'URLだけでチャンネルを識別합니다.' },
       { title: '精密感情分析', desc: 'コメントの反応をリアルタイム指数で 분류합니다.' },
-      { title: 'ブランドコラボガイド', desc: '最適なブランド適合性を提案합니다' },
-      { title: 'チャンネル成長ロードマップ', desc: '飛躍のための具体的な戦略を提供합니다.' },
+      { title: 'ブランドコラボガイド', desc: '最適なブランド適合성을 제안합니다' },
+      { title: 'チャンネル成長ロード맵', desc: '飛躍のための具体的な戦略を提供합니다.' },
       { title: 'トレンド拡張性分析', desc: '他プラットフォームへの拡張可能性を診断합니다.' },
       { title: 'コンテンツDNA抽出', desc: '核心テーマとスタイルを定義합니다.' }
     ],
-    footer: '© 2024 Influencer Insight Pro.'
+    footer: '© 2024 Influencer Insight Pro.',
+    apiKeyNeeded: {
+      title: 'APIキーが必要です',
+      desc: 'リアルタイム検索を使用するには、支払い情報が設定されたプロジェクトのAPIキーを選択してください。',
+      button: 'APIキーを選択',
+      linkText: '課金ドキュメント'
+    }
   },
   zh: {
     logo: { first: 'Influencer', second: 'Insight', third: 'PRO' },
@@ -87,7 +105,13 @@ const translations: Record<Language, any> = {
       { title: '趋势扩展分析', desc: '分析多平台扩展潜力。' },
       { title: '内容 DNA 提取', desc: '定义核心主题和风格。' }
     ],
-    footer: '© 2024 Influencer Insight Pro.'
+    footer: '© 2024 Influencer Insight Pro.',
+    apiKeyNeeded: {
+      title: '需要 API 密钥',
+      desc: '要使用实时搜索，请选择一个已启用结算功能的项目的 API 密钥。',
+      button: '选择 API 密钥',
+      linkText: '结算说明文档'
+    }
   },
   vi: {
     logo: { first: 'Influencer', second: 'Insight', third: 'PRO' },
@@ -108,7 +132,13 @@ const translations: Record<Language, any> = {
       { title: 'Phân tích xu hướng', desc: 'Chẩn đoán tiềm năng mở rộng.' },
       { title: 'Trích xuất DNA', desc: 'Xác định phong cách bằng dữ liệu.' }
     ],
-    footer: '© 2024 Influencer Insight Pro.'
+    footer: '© 2024 Influencer Insight Pro.',
+    apiKeyNeeded: {
+      title: 'Yêu cầu API Key',
+      desc: 'Để sử dụng tìm kiếm thời gian thực, vui lòng chọn API Key từ một dự án đã thanh toán.',
+      button: 'Chọn API Key',
+      linkText: 'Tài liệu thanh toán'
+    }
   },
   th: {
     logo: { first: 'Influencer', second: 'Insight', third: 'PRO' },
@@ -129,7 +159,13 @@ const translations: Record<Language, any> = {
       { title: 'การวิเคราะห์การขยายเทรนด์', desc: 'วินิจฉัยศักยภาพในการขยายแพลตฟอร์ม' },
       { title: 'การสกัด DNA เนื้อหา', desc: 'กำหนดหัวข้อหลักและสไตล์' }
     ],
-    footer: '© 2024 Influencer Insight Pro.'
+    footer: '© 2024 Influencer Insight Pro.',
+    apiKeyNeeded: {
+      title: 'ต้องใช้ API Key',
+      desc: 'เพื่อใช้การค้นหาแบบเรียลไทม์ โปรดเลือก API Key จากโปรเจกต์ที่มีการชำระเงิน',
+      button: 'เลือก API Key',
+      linkText: 'เอกสารการเรียกเก็บเงิน'
+    }
   },
   id: {
     logo: { first: 'Influencer', second: 'Insight', third: 'PRO' },
@@ -150,7 +186,13 @@ const translations: Record<Language, any> = {
       { title: 'Analisis Skalabilitas Tren', desc: 'Mendiagnosis potensi ekspansi lintas platform.' },
       { title: 'Ekstraksi DNA Konten', desc: 'Mendefinisikan topik dan gaya inti.' }
     ],
-    footer: '© 2024 Influencer Insight Pro.'
+    footer: '© 2024 Influencer Insight Pro.',
+    apiKeyNeeded: {
+      title: 'Memerlukan API Key',
+      desc: 'Untuk menggunakan pencarian real-time, harap pilih API Key dari proyek berbayar.',
+      button: 'Pilih API Key',
+      linkText: 'Dokumentasi Penagihan'
+    }
   }
 };
 
@@ -173,9 +215,27 @@ const App: React.FC = () => {
   const [isTranslating, setIsTranslating] = useState(false);
   const [report, setReport] = useState<AnalysisReport | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [hasKey, setHasKey] = useState<boolean | null>(null);
 
   const langMenuRef = useRef<HTMLDivElement>(null);
   const t = translations[lang] || translations.ko;
+
+  useEffect(() => {
+    const checkKey = async () => {
+      if (window.aistudio) {
+        const selected = await window.aistudio.hasSelectedApiKey();
+        setHasKey(selected);
+      }
+    };
+    checkKey();
+  }, []);
+
+  const handleSelectKey = async () => {
+    if (window.aistudio) {
+      await window.aistudio.openSelectKey();
+      setHasKey(true); // Assume success per guidelines
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -201,6 +261,9 @@ const App: React.FC = () => {
       setReport(data);
     } catch (err: any) {
       setError(err.message);
+      if (err.message.includes("Requested entity was not found")) {
+        setHasKey(false);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -232,6 +295,39 @@ const App: React.FC = () => {
 
   const currentLangLabel = languages.find(l => l.code === lang)?.label || '한국어(KR)';
 
+  // Key Selection Overlay
+  if (hasKey === false) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-[2.5rem] p-8 sm:p-12 text-center space-y-8 shadow-2xl">
+          <div className="w-20 h-20 bg-indigo-50 rounded-3xl flex items-center justify-center text-indigo-600 mx-auto text-3xl animate-bounce">
+            <i className="fa-solid fa-key"></i>
+          </div>
+          <div className="space-y-4">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">{t.apiKeyNeeded.title}</h2>
+            <p className="text-slate-500 font-bold leading-relaxed">{t.apiKeyNeeded.desc}</p>
+          </div>
+          <div className="space-y-4">
+            <button 
+              onClick={handleSelectKey}
+              className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-sm hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100"
+            >
+              {t.apiKeyNeeded.button}
+            </button>
+            <a 
+              href="https://ai.google.dev/gemini-api/docs/billing" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="block text-indigo-500 text-xs font-black underline"
+            >
+              {t.apiKeyNeeded.linkText}
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 overflow-x-hidden">
       {/* Navigation */}
@@ -249,7 +345,6 @@ const App: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4 ml-auto" ref={langMenuRef}>
-            {/* Custom Language Selector */}
             <div className="relative">
               <button 
                 onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
@@ -262,7 +357,6 @@ const App: React.FC = () => {
                 <i className={`fa-solid fa-chevron-${isLangMenuOpen ? 'up' : 'down'} text-[8px] sm:text-[10px] text-slate-400 transition-transform duration-300`}></i>
               </button>
 
-              {/* Dropdown Menu */}
               {isLangMenuOpen && (
                 <div className="absolute top-full mt-2 right-0 w-[180px] sm:w-[220px] bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden py-2 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
                   {languages.map((l) => (
@@ -293,7 +387,6 @@ const App: React.FC = () => {
       <main className="max-w-7xl mx-auto px-4 py-8 sm:py-16">
         {!report && !isLoading && (
           <div className="space-y-16 sm:space-y-24">
-            {/* Hero Section */}
             <div className="text-center space-y-8 sm:space-y-12 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-6 duration-1000">
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[10px] sm:text-xs font-black border border-indigo-100 mb-2">
                 <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
@@ -332,11 +425,10 @@ const App: React.FC = () => {
                     {t.input.button}
                   </button>
                 </div>
-                {error && <p className="mt-4 text-red-500 text-[11px] sm:text-sm font-black animate-pulse">{error}</p>}
+                {error && <p className="mt-4 text-red-500 text-[11px] sm:text-sm font-black animate-pulse max-w-md mx-auto">{error}</p>}
               </form>
             </div>
 
-            {/* Features Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 px-2">
               {t.features.map((f: any, i: number) => (
                 <div key={i} className="group p-7 sm:p-10 bg-white rounded-3xl border border-slate-100 hover:border-indigo-200 hover:shadow-2xl hover:shadow-indigo-50/50 transition-all duration-300">
