@@ -80,49 +80,26 @@ const App: React.FC = () => {
   const [isTranslating, setIsTranslating] = useState(false);
   const [report, setReport] = useState<AnalysisReport | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [hasKey, setHasKey] = useState<boolean | null>(null);
+  
+  // Directly check for process.env.API_KEY to avoid blocking
+  const [hasKey, setHasKey] = useState<boolean>(!!process.env.API_KEY);
 
   const langMenuRef = useRef<HTMLDivElement>(null);
-  // Manual key bypass ref to avoid interval/check race conditions
-  const keyBypassRef = useRef(false);
-  
   const t = translations[lang] || translations.ko;
 
   useEffect(() => {
-    const checkKey = async () => {
-      // If we already manually bypassed, don't re-check to prevent flickering
-      if (keyBypassRef.current) return;
-
-      if (window.aistudio) {
-        try {
-          const selected = await window.aistudio.hasSelectedApiKey();
-          // GUIDELINE: Rely on window.aistudio.hasSelectedApiKey and process.env.API_KEY
-          const isValid = selected || !!process.env.API_KEY;
-          setHasKey(isValid);
-          if (isValid) keyBypassRef.current = true;
-        } catch (e) {
-          setHasKey(!!process.env.API_KEY);
-        }
-      } else {
-        setHasKey(!!process.env.API_KEY);
-      }
-    };
-    checkKey();
-  }, []);
+    // One-time check for key selection if not already present in environment
+    if (!hasKey && window.aistudio) {
+      window.aistudio.hasSelectedApiKey().then(selected => {
+        if (selected) setHasKey(true);
+      }).catch(() => {});
+    }
+  }, [hasKey]);
 
   const handleSelectKey = async () => {
     if (window.aistudio) {
-      try {
-        await window.aistudio.openSelectKey();
-        // GUIDELINE: MUST assume success after triggering openSelectKey
-        keyBypassRef.current = true;
-        setHasKey(true);
-      } catch (e) {
-        console.error("Key selection failed", e);
-      }
-    } else {
-      // In non-AI Studio environments, we can't open a selector
-      setHasKey(!!process.env.API_KEY);
+      await window.aistudio.openSelectKey();
+      setHasKey(true); // Assume success per guidelines
     }
   };
 
@@ -151,13 +128,8 @@ const App: React.FC = () => {
     } catch (err: any) {
       const msg = err.message || "";
       setError(msg);
-      // If API call explicitly fails with Key-related error, reset the bypass
-      if (
-        msg.includes("Requested entity was not found") || 
-        msg.includes("API Key must be set") || 
-        msg.includes("API 키")
-      ) {
-        keyBypassRef.current = false;
+      // Only revert to key selection if API explicitly rejects the key
+      if (msg.includes("Requested entity was not found") || msg.includes("API Key")) {
         setHasKey(false);
       }
     } finally {
@@ -191,46 +163,24 @@ const App: React.FC = () => {
 
   const currentLangLabel = languages.find(l => l.code === lang)?.label || '한국어(KR)';
 
-  // Initial Load State
-  if (hasKey === null) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin"></div>
-          <p className="font-black text-slate-400 text-[10px] tracking-widest uppercase">System Initializing...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Key Selection Screen
-  if (hasKey === false) {
+  // If key is missing, show selection overlay
+  if (!hasKey) {
     return (
       <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-[2.5rem] p-8 sm:p-12 text-center space-y-8 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] animate-in fade-in zoom-in-95 duration-500">
-          <div className="w-20 h-20 bg-indigo-50 rounded-3xl flex items-center justify-center text-indigo-600 mx-auto text-3xl animate-bounce">
+        <div className="max-w-md w-full bg-white rounded-[2.5rem] p-8 sm:p-12 text-center space-y-8 shadow-2xl animate-in fade-in zoom-in-95 duration-500">
+          <div className="w-20 h-20 bg-indigo-50 rounded-3xl flex items-center justify-center text-indigo-600 mx-auto text-3xl">
             <i className="fa-solid fa-key"></i>
           </div>
           <div className="space-y-4">
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">{t.apiKeyNeeded.title}</h2>
             <p className="text-slate-500 font-bold leading-relaxed">{t.apiKeyNeeded.desc}</p>
           </div>
-          <div className="space-y-4 pt-4">
-            <button 
-              onClick={handleSelectKey}
-              className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black text-sm hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 active:scale-95"
-            >
-              {t.apiKeyNeeded.button}
-            </button>
-            <a 
-              href="https://ai.google.dev/gemini-api/docs/billing" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="block text-indigo-400 text-[11px] font-black underline hover:text-indigo-600"
-            >
-              {t.apiKeyNeeded.linkText}
-            </a>
-          </div>
+          <button 
+            onClick={handleSelectKey}
+            className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black text-sm hover:bg-indigo-700 transition-all shadow-xl active:scale-95"
+          >
+            {t.apiKeyNeeded.button}
+          </button>
         </div>
       </div>
     );
@@ -284,7 +234,6 @@ const App: React.FC = () => {
                 </div>
               )}
             </div>
-
             <button className="px-3.5 py-1.5 sm:px-6 sm:py-2.5 bg-slate-900 text-white rounded-full text-[10px] sm:text-xs font-black hover:bg-slate-800 transition-all shadow-md shrink-0">
               {t.nav.login}
             </button>
@@ -340,14 +289,6 @@ const App: React.FC = () => {
                       <span className="font-black text-xs uppercase tracking-widest">Analysis Error</span>
                     </div>
                     <p className="text-red-500 text-[12px] sm:text-sm font-black leading-relaxed italic">{error}</p>
-                    {(error.includes("API 키") || error.includes("failed")) && (
-                      <button 
-                        onClick={handleSelectKey}
-                        className="mt-3 text-[11px] font-black text-indigo-600 underline hover:text-indigo-800"
-                      >
-                        지금 API 키 선택하기
-                      </button>
-                    )}
                   </div>
                 )}
               </form>
